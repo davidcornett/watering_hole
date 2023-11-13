@@ -118,7 +118,6 @@ for index, row in student_origins.iterrows():
 #print(student_origins_dict[100937])  
 
 state = 'AZ'
-holder = []
 this_state = states[state]
 for unit_id in schools_dict:
     
@@ -132,7 +131,8 @@ for unit_id in schools_dict:
     this_state.add_school(new_pipeline)
     this_state.wt_demand_sum += wt_demand
     this_state.students_2022 += freshmen_2022
-        
+
+
 # placeholder
 for unit_id in schools_dict:
     school_pipeline = this_state.schools[unit_id]
@@ -148,53 +148,33 @@ for unit_id in schools_dict:
     school_pipeline.wt_shortfall = wt_shortfall
     this_state.wt_shortfall_sum += wt_shortfall
 
-#print(this_state.overage_sum)
-
-
-
-# placeholder
-for unit_id in schools_dict:
-    school_pipeline = this_state.schools[unit_id]
-    surplus = (school_pipeline.wt_shortfall/this_state.wt_shortfall_sum) * this_state.overage_sum
-    school_pipeline.students_2027 = surplus + school_pipeline.capped_students_2027
-    school_pipeline.cap_students() # caps any growth at estimated growth target
-
-this_state.overage_sum = 0 # reset for next loop
-# placeholder
-for unit_id in schools_dict:
-    school_pipeline = this_state.schools[unit_id]
-
-    overage = school_pipeline.students_2027 - school_pipeline.capped_students_2027
-    this_state.overage_sum += overage
-
-    if unit_id == 191649:
-        #122612
-        #166683
-        #print(surplus)
-        #print(overage)
-        pass
-
-this_state.wt_shortfall_sum = 0
-
-for unit_id in schools_dict:
-    school_pipeline = this_state.schools[unit_id]
-    score = float(schools_dict[unit_id].score.replace("%",""))/100
-    wt_shortfall = score * (school_pipeline.students_2022 - school_pipeline.capped_students_2027)
-    school_pipeline.wt_shortfall = wt_shortfall
-    this_state.wt_shortfall_sum += wt_shortfall
-
-
-for unit_id in schools_dict:
-    school_pipeline = this_state.schools[unit_id]
-    surplus = (school_pipeline.wt_shortfall/this_state.wt_shortfall_sum) * this_state.overage_sum
-    school_pipeline.students_2027 = surplus + school_pipeline.capped_students_2027
-    school_pipeline.cap_students() # caps any growth at estimated growth target
-    if unit_id == 166683:
-        print(school_pipeline.students_2027)
-
+print(this_state.overage_sum)
+while this_state.overage_sum > 0:
+    for unit_id in schools_dict:
+        school_pipeline = this_state.schools[unit_id]
+        surplus = (school_pipeline.wt_shortfall/this_state.wt_shortfall_sum) * this_state.overage_sum
+        school_pipeline.students_2027 = surplus + school_pipeline.capped_students_2027
+        school_pipeline.cap_students() # caps any growth at estimated growth target
+    
+    this_state.overage_sum = 0 # reset for next loop
+    for unit_id in schools_dict:
+        school_pipeline = this_state.schools[unit_id]
+        overage = school_pipeline.students_2027 - school_pipeline.capped_students_2027
+        this_state.overage_sum += overage
+    
+    this_state.wt_shortfall_sum = 0
+    for unit_id in schools_dict:
+        school_pipeline = this_state.schools[unit_id]
+        score = float(schools_dict[unit_id].score.replace("%",""))/100
+        wt_shortfall = score * (school_pipeline.students_2022 - school_pipeline.capped_students_2027)
+        school_pipeline.wt_shortfall = wt_shortfall
+        this_state.wt_shortfall_sum += wt_shortfall
 print(this_state.overage_sum)
 
-#print(states[state].wt_shortfall_sum)
+
+#166683
+id = 166683
+print(this_state.schools[id].students_2027)
 
 
 
