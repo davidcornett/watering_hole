@@ -70,111 +70,110 @@ def watering_hole(change, score, count):
     return 0
 
 
+def main():
+
+    # CREATE DICT OF STATE OBJECTS
+    state_demographics = load_data("data/state_demographics.csv")
+    states = {}
+    for index, row in state_demographics.iterrows():
+        state_name = row['State']
+        demographics_change_2027 = row['2027_change']
+        demographics_change_2032 = row['2032_change']
+        states[state_name] = State(state_name, demographics_change_2027, demographics_change_2032)
 
 
-# CREATE DICT OF STATE OBJECTS
-state_demographics = load_data("data/state_demographics.csv")
-states = {}
-for index, row in state_demographics.iterrows():
-    state_name = row['State']
-    demographics_change_2027 = row['2027_change']
-    demographics_change_2032 = row['2032_change']
-    states[state_name] = State(state_name, demographics_change_2027, demographics_change_2032)
+    #print(states['CA'].birth_change_2027)
+
+    # CREATE DICT OF SCHOOLS
+    schools = load_data("data/school_prestige.csv")
+    schools_dict = {}
+
+    for index, row in schools.iterrows():
+        unit_id = row['UnitID']
+        # Create a School object and store it in the dictionary with UnitID as the key
+        schools_dict[unit_id] = School(
+            unit_id,
+            row['Institution Name'],
+            row['Admit %'],
+            row['Yield %'],
+            row['Score'],
+            row['Segment']
+        )
+
+    # CREATE DICT OF SCHOOL STUDENT PIPELINES
+    student_origins = load_data("data/school_student_geography.csv")
+    student_origins_dict = {}
+    origins = [col for col in student_origins.columns if col not in ['UnitID', 'US FR', 'YR', 'SUM']]
+
+    # Iterate over the DataFrame rows
+    for index, row in student_origins.iterrows():
+        # Use UnitID as the key for the dictionary
+        unit_id = row['UnitID']
+        student_origins_dict[unit_id] = {}
+
+        # Populate the values for each state abbreviation
+        for state_abbr in origins:
+            student_origins_dict[unit_id][state_abbr] = row[state_abbr]
+
+    #print(student_origins_dict[100937])  
+
+    state = 'AZ'
+    this_state = states[state]
+    for unit_id in schools_dict:
+        
+        #if unit_id == 166683:
+        freshmen_2022 = student_origins_dict[unit_id][state]
+        change_2027 = this_state.birth_change_2027
+        score = float(schools_dict[unit_id].score.replace("%",""))/100
+        wt_demand = score * freshmen_2022 * (1 + change_2027)
+
+        new_pipeline = School_Pipeline(schools_dict[unit_id], freshmen_2022, wt_demand)
+        this_state.add_school(new_pipeline)
+        this_state.wt_demand_sum += wt_demand
+        this_state.students_2022 += freshmen_2022
 
 
-#print(states['CA'].birth_change_2027)
-
-# CREATE DICT OF SCHOOLS
-schools = load_data("data/school_prestige.csv")
-schools_dict = {}
-
-for index, row in schools.iterrows():
-    unit_id = row['UnitID']
-    # Create a School object and store it in the dictionary with UnitID as the key
-    schools_dict[unit_id] = School(
-        unit_id,
-        row['Institution Name'],
-        row['Admit %'],
-        row['Yield %'],
-        row['Score'],
-        row['Segment']
-    )
-
-# CREATE DICT OF SCHOOL STUDENT PIPELINES
-student_origins = load_data("data/school_student_geography.csv")
-student_origins_dict = {}
-origins = [col for col in student_origins.columns if col not in ['UnitID', 'US FR', 'YR', 'SUM']]
-
-# Iterate over the DataFrame rows
-for index, row in student_origins.iterrows():
-    # Use UnitID as the key for the dictionary
-    unit_id = row['UnitID']
-    student_origins_dict[unit_id] = {}
-
-    # Populate the values for each state abbreviation
-    for state_abbr in origins:
-        student_origins_dict[unit_id][state_abbr] = row[state_abbr]
-
-#print(student_origins_dict[100937])  
-
-state = 'AZ'
-this_state = states[state]
-for unit_id in schools_dict:
-    
-    #if unit_id == 166683:
-    freshmen_2022 = student_origins_dict[unit_id][state]
-    change_2027 = this_state.birth_change_2027
-    score = float(schools_dict[unit_id].score.replace("%",""))/100
-    wt_demand = score * freshmen_2022 * (1 + change_2027)
-
-    new_pipeline = School_Pipeline(schools_dict[unit_id], freshmen_2022, wt_demand)
-    this_state.add_school(new_pipeline)
-    this_state.wt_demand_sum += wt_demand
-    this_state.students_2022 += freshmen_2022
-
-
-# placeholder
-for unit_id in schools_dict:
-    school_pipeline = this_state.schools[unit_id]
-    share = school_pipeline.wt_demand / this_state.wt_demand_sum
-    this_state.set_students_2027()
-    school_pipeline.students_2027 = share * this_state.students_2027
-    school_pipeline.cap_students() # caps any growth at estimated growth target
-    overage = school_pipeline.students_2027 - school_pipeline.capped_students_2027
-    this_state.overage_sum += overage
-    
-    score = float(schools_dict[unit_id].score.replace("%",""))/100
-    wt_shortfall = score * (school_pipeline.students_2022 - school_pipeline.capped_students_2027)
-    school_pipeline.wt_shortfall = wt_shortfall
-    this_state.wt_shortfall_sum += wt_shortfall
-
-print(this_state.overage_sum)
-while this_state.overage_sum > 0:
+    # placeholder
     for unit_id in schools_dict:
         school_pipeline = this_state.schools[unit_id]
-        surplus = (school_pipeline.wt_shortfall/this_state.wt_shortfall_sum) * this_state.overage_sum
-        school_pipeline.students_2027 = surplus + school_pipeline.capped_students_2027
+        share = school_pipeline.wt_demand / this_state.wt_demand_sum
+        this_state.set_students_2027()
+        school_pipeline.students_2027 = share * this_state.students_2027
         school_pipeline.cap_students() # caps any growth at estimated growth target
-    
-    this_state.overage_sum = 0 # reset for next loop
-    for unit_id in schools_dict:
-        school_pipeline = this_state.schools[unit_id]
         overage = school_pipeline.students_2027 - school_pipeline.capped_students_2027
         this_state.overage_sum += overage
-    
-    this_state.wt_shortfall_sum = 0
-    for unit_id in schools_dict:
-        school_pipeline = this_state.schools[unit_id]
+        
         score = float(schools_dict[unit_id].score.replace("%",""))/100
         wt_shortfall = score * (school_pipeline.students_2022 - school_pipeline.capped_students_2027)
         school_pipeline.wt_shortfall = wt_shortfall
         this_state.wt_shortfall_sum += wt_shortfall
-print(this_state.overage_sum)
+
+    print(this_state.overage_sum)
+    while this_state.overage_sum > 0:
+        for unit_id in schools_dict:
+            school_pipeline = this_state.schools[unit_id]
+            surplus = (school_pipeline.wt_shortfall/this_state.wt_shortfall_sum) * this_state.overage_sum
+            school_pipeline.students_2027 = surplus + school_pipeline.capped_students_2027
+            school_pipeline.cap_students() # caps any growth at estimated growth target
+        
+        this_state.overage_sum = 0 # reset for next loop
+        for unit_id in schools_dict:
+            school_pipeline = this_state.schools[unit_id]
+            overage = school_pipeline.students_2027 - school_pipeline.capped_students_2027
+            this_state.overage_sum += overage
+        
+        this_state.wt_shortfall_sum = 0
+        for unit_id in schools_dict:
+            school_pipeline = this_state.schools[unit_id]
+            score = float(schools_dict[unit_id].score.replace("%",""))/100
+            wt_shortfall = score * (school_pipeline.students_2022 - school_pipeline.capped_students_2027)
+            school_pipeline.wt_shortfall = wt_shortfall
+            this_state.wt_shortfall_sum += wt_shortfall
+
+    return this_state
 
 
-#166683
-id = 166683
-print(this_state.schools[id].students_2027)
+
 
 
 
