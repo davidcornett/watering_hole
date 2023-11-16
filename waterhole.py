@@ -65,10 +65,6 @@ def load_data(filename):
     return pd.read_csv(filename)
 
 
-def watering_hole(change, score, count):
-    print(count)
-    return 0
-
 def calculate_scores(schools_dict):
     """Calculate and return a dictionary of scores for each school."""
     scores = {}
@@ -124,65 +120,77 @@ def main():
 
     #print(student_origins_dict[100937])  
 
-    state = 'AZ'
-    this_state = states[state]
+    return waterhole(states, schools_dict, student_origins_dict)
+
+def waterhole(states, schools_dict, student_origins_dict):
+
     scores = calculate_scores(schools_dict)
+    for state in states:
 
-    # WATERHOLE STEP 1: initial processing for each school
-    for unit_id in schools_dict:
-        
-        freshmen_2022 = student_origins_dict[unit_id][state]
+        this_state = states[state]
+        print(state)
         change_2027 = this_state.birth_change_2027
-        score = scores[unit_id] # school's selectivity score
-        wt_demand = score * freshmen_2022 * (1 + change_2027) # demand for students taking into account selectivity and state demographics
+        if change_2027 >= 0:
+            pass
+        else:
 
-        # create school-state pipeline object and add it to state.schools
-        new_pipeline = School_Pipeline(schools_dict[unit_id], freshmen_2022, wt_demand)
-        this_state.add_school(new_pipeline)
-        this_state.wt_demand_sum += wt_demand 
-        this_state.students_2022 += freshmen_2022
 
-    # change state's total students based on 2022-2027 demographic change
-    this_state.set_students_2027() 
+            # WATERHOLE STEP 1: initial processing for each school
+            for unit_id in schools_dict:
+                
+                freshmen_2022 = student_origins_dict[unit_id][state]
+                
+                score = scores[unit_id] # school's selectivity score
+                wt_demand = score * freshmen_2022 * (1 + change_2027) # demand for students taking into account selectivity and state demographics
 
-    # WATERHOLE STEP 2: set inital 2027 student counts for schools
-    for unit_id in schools_dict:
-        school_pipeline = this_state.schools[unit_id]
-        share = school_pipeline.wt_demand / this_state.wt_demand_sum
-        school_pipeline.students_2027 = share * this_state.students_2027
-        school_pipeline.cap_students() # caps any growth at estimated growth target
-        overage = school_pipeline.students_2027 - school_pipeline.capped_students_2027
-        this_state.overage_sum += overage
-        
-        score = scores[unit_id]
-        wt_shortfall = score * (school_pipeline.students_2022 - school_pipeline.capped_students_2027)
-        school_pipeline.wt_shortfall = wt_shortfall
-        this_state.wt_shortfall_sum += wt_shortfall
+                # create school-state pipeline object and add it to state.schools
+                new_pipeline = School_Pipeline(schools_dict[unit_id], freshmen_2022, wt_demand)
+                this_state.add_school(new_pipeline)
+                this_state.wt_demand_sum += wt_demand 
+                this_state.students_2022 += freshmen_2022
 
-    # WATERHOLE STEP 3 - n: keep redistributing students until each school is capped by the target growth rate and excess students are apportioned to other schools
-    while this_state.overage_sum > 0:
-        for unit_id in schools_dict:
-            school_pipeline = this_state.schools[unit_id]
-            surplus = (school_pipeline.wt_shortfall/this_state.wt_shortfall_sum) * this_state.overage_sum
-            school_pipeline.students_2027 = surplus + school_pipeline.capped_students_2027
-            school_pipeline.cap_students() # caps any growth at estimated growth target
-        
-        this_state.overage_sum = 0 # reset for next loop
-        for unit_id in schools_dict:
-            school_pipeline = this_state.schools[unit_id]
-            overage = school_pipeline.students_2027 - school_pipeline.capped_students_2027
-            this_state.overage_sum += overage
-        
-        this_state.wt_shortfall_sum = 0
-        for unit_id in schools_dict:
-            school_pipeline = this_state.schools[unit_id]
-            score = scores[unit_id]
-            wt_shortfall = score * (school_pipeline.students_2022 - school_pipeline.capped_students_2027)
-            school_pipeline.wt_shortfall = wt_shortfall
-            this_state.wt_shortfall_sum += wt_shortfall
-    
+            # change state's total students based on 2022-2027 demographic change
+            this_state.set_students_2027() 
+
+            # WATERHOLE STEP 2: set inital 2027 student counts for schools
+            for unit_id in schools_dict:
+                school_pipeline = this_state.schools[unit_id]
+                share = school_pipeline.wt_demand / this_state.wt_demand_sum
+                school_pipeline.students_2027 = share * this_state.students_2027
+                school_pipeline.cap_students() # caps any growth at estimated growth target
+                overage = school_pipeline.students_2027 - school_pipeline.capped_students_2027
+                this_state.overage_sum += overage
+                
+                score = scores[unit_id]
+                wt_shortfall = score * (school_pipeline.students_2022 - school_pipeline.capped_students_2027)
+                school_pipeline.wt_shortfall = wt_shortfall
+                this_state.wt_shortfall_sum += wt_shortfall
+
+            # WATERHOLE STEP 3 - n: keep redistributing students until each school is capped by the target growth rate and excess students are apportioned to other schools
+            while this_state.overage_sum > 0:
+                for unit_id in schools_dict:
+                    school_pipeline = this_state.schools[unit_id]
+                    surplus = (school_pipeline.wt_shortfall/this_state.wt_shortfall_sum) * this_state.overage_sum
+                    school_pipeline.students_2027 = surplus + school_pipeline.capped_students_2027
+                    school_pipeline.cap_students() # caps any growth at estimated growth target
+                
+                this_state.overage_sum = 0 # reset for next loop
+                for unit_id in schools_dict:
+                    school_pipeline = this_state.schools[unit_id]
+                    overage = school_pipeline.students_2027 - school_pipeline.capped_students_2027
+                    this_state.overage_sum += overage
+                
+                this_state.wt_shortfall_sum = 0
+                for unit_id in schools_dict:
+                    school_pipeline = this_state.schools[unit_id]
+                    score = scores[unit_id]
+                    wt_shortfall = score * (school_pipeline.students_2022 - school_pipeline.capped_students_2027)
+                    school_pipeline.wt_shortfall = wt_shortfall
+                    this_state.wt_shortfall_sum += wt_shortfall
+
     return this_state
 
+main()
 
 
 
