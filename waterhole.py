@@ -12,7 +12,7 @@ class School:
         self.segment = segment
 
 class School_Pipeline:
-    def __init__(self, school, freshmen_2022, wt_demand): 
+    def __init__(self, school, freshmen_2022, wt_demand=None): 
         self.school = school
         self.students_2022 = freshmen_2022
         self.wt_demand = wt_demand
@@ -126,14 +126,17 @@ def waterhole(states, schools_dict, student_origins_dict):
 
     scores = calculate_scores(schools_dict)
     for state in states:
-
         this_state = states[state]
-        print(state)
         change_2027 = this_state.birth_change_2027
-        if change_2027 >= 0:
-            pass
-        else:
 
+        # for growing states, simply increase each school by overall state growth rate
+        if change_2027 >= 0:
+            for unit_id in schools_dict:
+                freshmen_2022 = student_origins_dict[unit_id][state]
+                new_pipeline = School_Pipeline(schools_dict[unit_id], freshmen_2022)
+                this_state.add_school(new_pipeline)
+                new_pipeline.students_2027 = new_pipeline.students_2022 * (1 + change_2027)
+        else:
 
             # WATERHOLE STEP 1: initial processing for each school
             for unit_id in schools_dict:
@@ -188,7 +191,7 @@ def waterhole(states, schools_dict, student_origins_dict):
                     school_pipeline.wt_shortfall = wt_shortfall
                     this_state.wt_shortfall_sum += wt_shortfall
 
-    return this_state
+    return states
 
 main()
 
