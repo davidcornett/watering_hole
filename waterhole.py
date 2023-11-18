@@ -11,6 +11,16 @@ class School:
         self.score = score
         self.segment = segment
 
+        self.students_2022 = 0
+        self.students_2027 = 0
+        self.student_change = 0
+
+    def set_students(self, states):
+        for state in states:
+            self.students_2022 += states[state].schools[self.unit_id].students_2022
+            self.students_2027 += states[state].schools[self.unit_id].students_2027
+
+
 class School_Pipeline:
     def __init__(self, school, freshmen_2022, wt_demand=None): 
         self.school = school
@@ -71,56 +81,6 @@ def calculate_scores(schools_dict):
     for unit_id in schools_dict:
         scores[unit_id] = float(schools_dict[unit_id].score.replace("%", "")) / 100
     return scores
-
-
-def main():
-
-    # CREATE DICT OF STATE OBJECTS
-    state_demographics = load_data("data/state_demographics.csv")
-    states = {}
-    for index, row in state_demographics.iterrows():
-        state_name = row['State']
-        demographics_change_2027 = row['2027_change']
-        demographics_change_2032 = row['2032_change']
-        states[state_name] = State(state_name, demographics_change_2027, demographics_change_2032)
-
-
-    #print(states['CA'].birth_change_2027)
-
-    # CREATE DICT OF SCHOOLS
-    schools = load_data("data/school_prestige.csv")
-    schools_dict = {}
-
-    for index, row in schools.iterrows():
-        unit_id = row['UnitID']
-        # Create a School object and store it in the dictionary with UnitID as the key
-        schools_dict[unit_id] = School(
-            unit_id,
-            row['Institution Name'],
-            row['Admit %'],
-            row['Yield %'],
-            row['Score'],
-            row['Segment']
-        )
-
-    # CREATE DICT OF SCHOOL STUDENT PIPELINES
-    student_origins = load_data("data/school_student_geography.csv")
-    student_origins_dict = {}
-    origins = [col for col in student_origins.columns if col not in ['UnitID', 'US FR', 'YR', 'SUM']]
-
-    # Iterate over the DataFrame rows
-    for index, row in student_origins.iterrows():
-        # Use UnitID as the key for the dictionary
-        unit_id = row['UnitID']
-        student_origins_dict[unit_id] = {}
-
-        # Populate the values for each state abbreviation
-        for state_abbr in origins:
-            student_origins_dict[unit_id][state_abbr] = row[state_abbr]
-
-    #print(student_origins_dict[100937])  
-
-    return waterhole(states, schools_dict, student_origins_dict)
 
 def waterhole(states, schools_dict, student_origins_dict):
 
@@ -191,11 +151,69 @@ def waterhole(states, schools_dict, student_origins_dict):
                     school_pipeline.wt_shortfall = wt_shortfall
                     this_state.wt_shortfall_sum += wt_shortfall
 
-    return states
+    #return states
+
+def main():
+
+    # CREATE DICT OF STATE OBJECTS
+    state_demographics = load_data("data/state_demographics.csv")
+    states = {}
+    for index, row in state_demographics.iterrows():
+        state_name = row['State']
+        demographics_change_2027 = row['2027_change']
+        demographics_change_2032 = row['2032_change']
+        states[state_name] = State(state_name, demographics_change_2027, demographics_change_2032)
+
+
+    #print(states['CA'].birth_change_2027)
+
+    # CREATE DICT OF SCHOOLS
+    schools = load_data("data/school_prestige.csv")
+    schools_dict = {}
+
+    for index, row in schools.iterrows():
+        unit_id = row['UnitID']
+        # Create a School object and store it in the dictionary with UnitID as the key
+        schools_dict[unit_id] = School(
+            unit_id,
+            row['Institution Name'],
+            row['Admit %'],
+            row['Yield %'],
+            row['Score'],
+            row['Segment']
+        )
+
+    # CREATE DICT OF SCHOOL STUDENT PIPELINES
+    student_origins = load_data("data/school_student_geography.csv")
+    student_origins_dict = {}
+    origins = [col for col in student_origins.columns if col not in ['UnitID', 'US FR', 'YR', 'SUM']]
+
+    # Iterate over the DataFrame rows
+    for index, row in student_origins.iterrows():
+        # Use UnitID as the key for the dictionary
+        unit_id = row['UnitID']
+        student_origins_dict[unit_id] = {}
+
+        # Populate the values for each state abbreviation
+        for state_abbr in origins:
+            student_origins_dict[unit_id][state_abbr] = row[state_abbr]
+
+    # WATER HOLE algorithm distributes students based on state demographics and school selectivity
+    waterhole(states, schools_dict, student_origins_dict)
+    #print(states['IL'].schools[145600].students_2027)  
+
+    # Aggregate 2027 student counts for each school
+    for unit_id in schools_dict:
+       schools_dict[unit_id].set_students(states)
+
+    #print(schools_dict[145600].students_2027)
+    return schools_dict
 
 main()
 
-
-
+#print(s['IL'].schools[145600].students_2027)
+#166683 MIT
+#186131
+#145600
 
 
