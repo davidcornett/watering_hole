@@ -13,19 +13,23 @@ class School:
 
         self.students_2022 = 0
         self.students_2027 = 0
+        self.students_2022_unknown = 0
+        self.students_2022_foreign = 0
         self.student_change = 0
 
-    def set_students(self, states):
+    def set_US_students(self, states):
         for state in states:
             self.students_2022 += states[state].schools[self.unit_id].students_2022
             self.students_2027 += states[state].schools[self.unit_id].students_2027
-            if self.students_2022 > 0:
-                try:
-                    self.student_change = self.students_2027 / self.students_2022 - 1
-                except:
-                    self.student_change = 0
+    
+    def set_unknown_and_foreign_students(self, student_origin_dict):
+        self.students_2022_unknown = student_origin_dict[self.unit_id]['Unknown_state']
+        self.students_2022_foreign = student_origin_dict[self.unit_id]['Foreign']
 
-
+    def set_student_change(self):
+        if self.students_2022 > 0:
+            other_students = self.students_2022_unknown + self.students_2022_foreign
+            self.student_change = (self.students_2027 + other_students)/(self.students_2022 + other_students) - 1
 
 class School_Pipeline:
     def __init__(self, school, freshmen_2022, wt_demand=None): 
@@ -203,14 +207,18 @@ def main():
         # Populate the values for each state abbreviation
         for state_abbr in origins:
             student_origins_dict[unit_id][state_abbr] = row[state_abbr]
+            if state_abbr == 'Unknown_state' and unit_id == 110404:
+                print(student_origins_dict[unit_id][state_abbr])
 
     # WATER HOLE algorithm distributes students based on state demographics and school selectivity
     waterhole(states, schools_dict, student_origins_dict)
     #print(states['IL'].schools[145600].students_2027)  
 
-    # Aggregate 2027 student counts for each school
+    # Aggregate 2027 student counts for each school and add unknown/foreign student counts
     for unit_id in schools_dict:
-       schools_dict[unit_id].set_students(states)
+       schools_dict[unit_id].set_US_students(states)
+       schools_dict[unit_id].set_unknown_and_foreign_students(student_origins_dict)
+       schools_dict[unit_id].set_student_change()
 
     print(schools_dict[145600].student_change)
     return schools_dict
