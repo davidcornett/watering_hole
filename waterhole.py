@@ -207,8 +207,11 @@ def main():
         # Populate the values for each state abbreviation
         for state_abbr in origins:
             student_origins_dict[unit_id][state_abbr] = row[state_abbr]
+
+            """
             if state_abbr == 'Unknown_state' and unit_id == 110404:
                 print(student_origins_dict[unit_id][state_abbr])
+            """
 
     # WATER HOLE algorithm distributes students based on state demographics and school selectivity
     waterhole(states, schools_dict, student_origins_dict)
@@ -220,7 +223,7 @@ def main():
        schools_dict[unit_id].set_unknown_and_foreign_students(student_origins_dict)
        schools_dict[unit_id].set_student_change()
 
-    print(schools_dict[145600].student_change)
+    #print(schools_dict[145600].student_change)
     return schools_dict
 
 main()
