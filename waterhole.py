@@ -19,6 +19,12 @@ class School:
         for state in states:
             self.students_2022 += states[state].schools[self.unit_id].students_2022
             self.students_2027 += states[state].schools[self.unit_id].students_2027
+            if self.students_2022 > 0:
+                try:
+                    self.student_change = self.students_2027 / self.students_2022 - 1
+                except:
+                    self.student_change = 0
+
 
 
 class School_Pipeline:
@@ -206,7 +212,7 @@ def main():
     for unit_id in schools_dict:
        schools_dict[unit_id].set_students(states)
 
-    #print(schools_dict[145600].students_2027)
+    print(schools_dict[145600].student_change)
     return schools_dict
 
 main()
