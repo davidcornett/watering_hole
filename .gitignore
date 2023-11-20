@@ -1,3 +1,3 @@
-# ignore all csv
+/data
 *.csv
 key.key
