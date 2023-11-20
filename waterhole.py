@@ -1,4 +1,7 @@
 import pandas as pd
+from cryptography.fernet import Fernet
+import json
+
 
 school_growth_target_rate = 0
 
@@ -30,6 +33,15 @@ class School:
         if self.students_2022 > 0:
             other_students = self.students_2022_unknown + self.students_2022_foreign
             self.student_change = (self.students_2027 + other_students)/(self.students_2022 + other_students) - 1
+    
+    # For json serialization
+    def to_dict(self):
+        return {
+            'unit_id': self.unit_id,
+            'name': self.name,
+            'students_2027': self.students_2027,
+            'students_change': self.student_change
+        }
 
 class School_Pipeline:
     def __init__(self, school, freshmen_2022, wt_demand=None): 
@@ -163,6 +175,25 @@ def waterhole(states, schools_dict, student_origins_dict):
 
     #return states
 
+def encrypt_data(data, key):
+    # Instantiate a Fernet instance with your key
+    cipher_suite = Fernet(key)
+
+    # Encrypt the data
+    cipher_text = cipher_suite.encrypt(data.encode())
+
+    return cipher_text
+
+def save_encrypted_data(data, filename):
+    # Save the encrypted data to a file
+    with open(filename, 'wb') as f:
+        f.write(data)
+
+def save_key(key, filename):
+    # Save the key to a local file
+    with open(filename, 'w') as f:
+        f.write(key.decode())
+
 def main():
 
     # CREATE DICT OF STATE OBJECTS
@@ -224,7 +255,25 @@ def main():
        schools_dict[unit_id].set_student_change()
 
     #print(schools_dict[145600].student_change)
-    return schools_dict
+    # Convert each School object to a dictionary
+    schools_json_dict = {k: v.to_dict() for k, v in schools_dict.items()}
+
+    # Convert the dictionary to a JSON string
+    data = json.dumps(schools_json_dict)
+
+    # Generate a key
+    key = Fernet.generate_key()
+
+    # Encrypt the data
+    cipher_text = encrypt_data(data, key)
+
+    # Save the encrypted data to a file
+    save_encrypted_data(cipher_text, 'schools_2027.encrypted')
+
+    # Save the key to a local file
+    save_key(key, 'key.key')
+
+    return schools_json_dict
 
 main()
 
@@ -232,5 +281,6 @@ main()
 #166683 MIT
 #186131
 #145600
+
 
 
