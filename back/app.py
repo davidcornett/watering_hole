@@ -1,7 +1,9 @@
-from flask import Flask, send_file
+from flask import Flask
+from flask_cors import CORS
 from cryptography.fernet import Fernet
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/data', methods=['GET'])
 def get_data():
