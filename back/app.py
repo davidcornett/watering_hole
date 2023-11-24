@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_cors import CORS
 from cryptography.fernet import Fernet
 
@@ -7,24 +7,33 @@ CORS(app)
 
 @app.route('/data', methods=['GET'])
 def get_data():
-    # Load the key
-    with open('key.key', 'rb') as f:
-        key = f.read()
 
-    # Create a cipher suite
-    cipher_suite = Fernet(key)
+    university_name = request.args.get('university')
+    if university_name:
+        # Load the key
+        with open('key.key', 'rb') as f:
+            key = f.read()
 
-    # Load the encrypted data
-    with open('schools_2027.encrypted', 'rb') as f:
-        encrypted_data = f.read()
+        # Create a cipher suite
+        cipher_suite = Fernet(key)
 
-    # Decrypt the data
-    decrypted_data = cipher_suite.decrypt(encrypted_data)
+        # Load the encrypted data
+        with open('schools_2027.encrypted', 'rb') as f:
+            encrypted_data = f.read()
 
-    # Convert the bytes to string
-    decrypted_data_str = decrypted_data.decode('utf-8')
+        # Decrypt the data
+        decrypted_data = cipher_suite.decrypt(encrypted_data)
 
-    return decrypted_data_str
+        # Convert the bytes to string
+        decrypted_data_str = decrypted_data.decode('utf-8')
+
+        return decrypted_data_str
+        
+    else:
+        return "Please enter a valid university name."
+
+
+
 
 if __name__ == '__main__':
     app.run(port=4000, debug=True)
