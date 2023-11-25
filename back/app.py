@@ -1,9 +1,24 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from cryptography.fernet import Fernet
+import pandas as pd
 
 app = Flask(__name__)
 CORS(app)
+
+@app.route('/universities', methods=['GET'])
+def get_universities():
+    try:
+        # Load the CSV file
+        df = pd.read_csv('data/school_prestige.csv')
+
+        # Get the list of unique university names
+        universities = df['Institution Name'].unique().tolist()
+
+        # Return the list as JSON
+        return jsonify(universities)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/data', methods=['GET'])
 def get_data():
