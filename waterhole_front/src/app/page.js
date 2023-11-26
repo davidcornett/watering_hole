@@ -7,6 +7,7 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import SearchBar from './SearchBar';
+import TextField from '@mui/material/TextField';
 
 export default function Page() {
   const [data, setData] = useState('');
@@ -57,6 +58,7 @@ export default function Page() {
   };
 
   return (
+    <div>
     <ThemeProvider theme={theme}>
       <AppBar position="static">
         <Toolbar>
@@ -73,5 +75,11 @@ export default function Page() {
         <pre>{data ? JSON.stringify(data, null, 2) : 'No data'}</pre>
       </div>
     </ThemeProvider>
+          <div>
+          <TextField label="test">
+          </TextField>
+          <h2>test</h2>
+            </div>
+      </div>
   );
 }

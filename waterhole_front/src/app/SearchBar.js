@@ -24,7 +24,7 @@ function SearchBar({ onSearch, universityList }) {
           label="Search for a University" 
           variant="outlined" 
           fullWidth 
-          style={{ color: 'white' }} // Adjust the color as needed
+          style={{ backgroundColor: 'white', color: 'black' }} 
           />
         )}
         onInputChange={(event, newInputValue) => {
