@@ -5,6 +5,11 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
 
 function SearchBar({ onSearch, universityList }) {
+  const [inputValue, setInputValue] = useState('');
+
+  const handleButtonClick = () => {
+    onSearch(inputValue);
+  };
 
   /*
   const [input, setInput] = useState('');
@@ -20,22 +25,18 @@ function SearchBar({ onSearch, universityList }) {
         freeSolo
         options={universityList}
         renderInput={(params) => (
-          <TextField {...params} 
-          label="Search for a University" 
-          variant="outlined" 
-          fullWidth 
-          style={{ backgroundColor: 'white', color: 'black' }} 
-          />
+          <TextField {...params} label="Search for a University" variant="outlined" fullWidth />
         )}
         onInputChange={(event, newInputValue) => {
-          onSearch(newInputValue);
+          setInputValue(newInputValue);
         }}
       />
-      <Button variant="contained" color="primary" onClick={() => onSearch()}>
+      <Button variant="contained" color="primary" onClick={handleButtonClick}>
         Search
       </Button>
     </div>
   );
 }
+
 export default SearchBar;
 
