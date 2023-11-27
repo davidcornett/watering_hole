@@ -10,20 +10,25 @@ CORS(app)
 def get_universities():
     try:
         # Load the CSV file
-        df = pd.read_csv('data/school_prestige.csv')
+        df = pd.read_csv('data/school_prestige_with_state.csv')
 
         # Get the list of unique university names
-        universities = df['Institution Name'].unique().tolist()
+        df['Institution With State'] = df['Institution Name'] + " (" + df['State'] + ")"
+        universities = df['Institution With State'].unique().tolist()
 
         # Return the list as JSON
         return jsonify(universities)
+        
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
 
 @app.route('/data', methods=['GET'])
 def get_data():
 
     university_name = request.args.get('university')
+
     if university_name:
         # Load the key
         with open('key.key', 'rb') as f:
@@ -41,6 +46,10 @@ def get_data():
 
         # Convert the bytes to string
         decrypted_data_str = decrypted_data.decode('utf-8')
+
+        # get matching school info
+
+
 
         return decrypted_data_str
         

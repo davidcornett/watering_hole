@@ -1,3 +1,4 @@
 **/data
 **/*.csv
 **/key.key
+**/dupe_name_checker.py

@@ -6,13 +6,16 @@ import json
 school_growth_target_rate = 0
 
 class School:
-    def __init__(self, unit_id, name, admit_rate, yield_rate, score, segment):
+    def __init__(self, unit_id, name, admit_rate, yield_rate, score, segment, state):
         self.unit_id = unit_id
         self.name = name
         self.admit_rate = admit_rate
         self.yield_rate = yield_rate
         self.score = score
         self.segment = segment
+        self.home_state = state
+        self.name_with_state = None
+
 
         self.students_2022 = 0
         self.students_2027 = 0
@@ -34,6 +37,9 @@ class School:
             other_students = self.students_2022_unknown + self.students_2022_foreign
             self.student_change = (self.students_2027 + other_students)/(self.students_2022 + other_students) - 1
     
+    def set_name_with_state(self):
+        self.name_with_state = self.name + " (" + self.home_state + ")"
+
     # For json serialization
     def to_dict(self):
         return {
@@ -209,7 +215,7 @@ def main():
     #print(states['CA'].birth_change_2027)
 
     # CREATE DICT OF SCHOOLS
-    schools = load_data("data/school_prestige.csv")
+    schools = load_data("data/school_prestige_with_state.csv")
     schools_dict = {}
 
     for index, row in schools.iterrows():
@@ -221,8 +227,10 @@ def main():
             row['Admit %'],
             row['Yield %'],
             row['Score'],
-            row['Segment']
+            row['Segment'],
+            row['State']
         )
+        schools_dict[unit_id].set_name_with_state()
 
     # CREATE DICT OF SCHOOL STUDENT PIPELINES
     student_origins = load_data("data/school_student_geography.csv")
@@ -254,7 +262,13 @@ def main():
        schools_dict[unit_id].set_unknown_and_foreign_students(student_origins_dict)
        schools_dict[unit_id].set_student_change()
 
-    #print(schools_dict[145600].student_change)
+    """
+    # print all attributes of schools in schools_dict with name "Columbia College"
+    for unit_id in schools_dict:
+        if schools_dict[unit_id].name == "Columbia College":
+            print(vars(schools_dict[unit_id]))
+    """
+
     # Convert each School object to a dictionary
     schools_json_dict = {k: v.to_dict() for k, v in schools_dict.items()}
 
