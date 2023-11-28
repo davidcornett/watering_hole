@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from cryptography.fernet import Fernet
 import pandas as pd
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -47,11 +48,13 @@ def get_data():
         # Convert the bytes to string
         decrypted_data_str = decrypted_data.decode('utf-8')
 
-        # get matching school info
+        # Convert the string to a list of dictionaries
+        data = json.loads(decrypted_data_str)
 
+        # Filter for the matching school
+        matching_school = next((school_info for school_info in data.values() if school_info['name_with_state'] == university_name), None)
 
-
-        return decrypted_data_str
+        return json.dumps(matching_school) if matching_school else "School not found"
         
     else:
         return "Please enter a valid university name."

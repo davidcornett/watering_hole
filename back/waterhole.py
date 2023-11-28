@@ -44,7 +44,7 @@ class School:
     def to_dict(self):
         return {
             'unit_id': self.unit_id,
-            'name': self.name,
+            'name_with_state': self.name_with_state,
             'students_2027': self.students_2027,
             'students_change': self.student_change
         }
@@ -262,7 +262,8 @@ def main():
        schools_dict[unit_id].set_unknown_and_foreign_students(student_origins_dict)
        schools_dict[unit_id].set_student_change()
 
-    """
+
+    """    
     # print all attributes of schools in schools_dict with name "Columbia College"
     for unit_id in schools_dict:
         if schools_dict[unit_id].name == "Columbia College":
@@ -274,7 +275,7 @@ def main():
 
     # Convert the dictionary to a JSON string
     data = json.dumps(schools_json_dict)
-
+    
     # Generate a key
     key = Fernet.generate_key()
 
