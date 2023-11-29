@@ -6,8 +6,9 @@ import theme from '../theme';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import SearchBar from './SearchBar';
 import TextField from '@mui/material/TextField';
+import SearchBar from './components/SearchBar';
+import SchoolInfo from './components/SchoolInfo';
 
 export default function Page() {
   const [data, setData] = useState('');
@@ -44,7 +45,7 @@ export default function Page() {
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-        return response.json();
+        return response.json(); // change to .text() if your backend sends plain text instead of JSON
       })
       .then(data => {
         setData(data);
@@ -72,7 +73,10 @@ export default function Page() {
         <SearchBar onSearch={handleSearch} universityList={universityList} />
         {loading && <p>Loading...</p>}
         {error && <p>Error: {error.message}</p>}
-        <pre>{data ? JSON.stringify(data, null, 2) : 'No data'}</pre>
+        {/* <pre>{data ? JSON.stringify(data, null, 2) : 'No data'}</pre> */}
+        <div>
+          {data && <SchoolInfo data={data} />}
+        </div>
       </div>
     </ThemeProvider>
           <div>
@@ -80,6 +84,11 @@ export default function Page() {
           </TextField>
           <h2>test</h2>
             </div>
+
+
+
+
       </div>
+      
   );
 }

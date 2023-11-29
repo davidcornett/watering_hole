@@ -54,6 +54,7 @@ def get_data():
         # Filter for the matching school
         matching_school = next((school_info for school_info in data.values() if school_info['name_with_state'] == university_name), None)
 
+        #return matching_school["name_with_state"] if matching_school else "School not found"
         return json.dumps(matching_school) if matching_school else "School not found"
         
     else:
