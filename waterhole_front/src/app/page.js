@@ -48,6 +48,8 @@ export default function Page() {
         return response.json(); // change to .text() if your backend sends plain text instead of JSON
       })
       .then(data => {
+        console.log("Received data from server:", data);  // Log the data
+
         setData(data);
         setLoading(false);
       })

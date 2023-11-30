@@ -31,32 +31,43 @@ def get_data():
     university_name = request.args.get('university')
 
     if university_name:
-        # Load the key
+        # Load and decrypt with the first key
         with open('key.key', 'rb') as f:
             key = f.read()
-
-        # Create a cipher suite
         cipher_suite = Fernet(key)
 
-        # Load the encrypted data
+        # Load and decrypt 'schools_2027.encrypted'
         with open('schools_2027.encrypted', 'rb') as f:
             encrypted_data = f.read()
-
-        # Decrypt the data
         decrypted_data = cipher_suite.decrypt(encrypted_data)
+        data_2027 = json.loads(decrypted_data.decode('utf-8'))
 
-        # Convert the bytes to string
-        decrypted_data_str = decrypted_data.decode('utf-8')
+        # Load and decrypt with the sidewalk key
+        with open('sidewalk_key.key', 'rb') as f:
+            sidewalk_key = f.read()
+        sidewalk_cipher_suite = Fernet(sidewalk_key)
 
-        # Convert the string to a list of dictionaries
-        data = json.loads(decrypted_data_str)
+        # Load and decrypt 'schools_sidewalk_2027.encrypted'
+        with open('schools_sidewalk_2027.encrypted', 'rb') as f:
+            encrypted_data_sidewalk = f.read()
+        decrypted_data_sidewalk = sidewalk_cipher_suite.decrypt(encrypted_data_sidewalk)
+        data_sidewalk_2027 = json.loads(decrypted_data_sidewalk.decode('utf-8'))
 
-        # Filter for the matching school
-        matching_school = next((school_info for school_info in data.values() if school_info['name_with_state'] == university_name), None)
+        # Find the matching school in both datasets
+        matching_school_2027 = next((info for info in data_2027.values() if info['name_with_state'] == university_name), None)
+        matching_school_sidewalk_2027 = next((info for info in data_sidewalk_2027.values() if info['name_with_state'] == university_name), None)
 
-        #return matching_school["name_with_state"] if matching_school else "School not found"
-        return json.dumps(matching_school) if matching_school else "School not found"
-        
+        # Combine data if both matches are found
+        if matching_school_2027 and matching_school_sidewalk_2027:
+            combined_data = {
+                **matching_school_2027, 
+                **matching_school_sidewalk_2027, 
+                'students_change': matching_school_2027['students_change'],
+                'students_change_sidewalk': matching_school_sidewalk_2027['students_change']
+            }
+            return jsonify(combined_data)
+        else:
+            return "School not found"
     else:
         return "Please enter a valid university name."
 
