@@ -10,10 +10,20 @@ import TextField from '@mui/material/TextField';
 import SearchBar from './components/SearchBar';
 import SchoolInfo from './components/SchoolInfo';
 
+
+const IntroCard = ({ title, content }) => (
+  <div style={{ margin: '20px', padding: '20px', border: '1px solid #ccc', borderRadius: '10px', backgroundColor: '#f9f9f9' }}>
+    <h2 style={{ color: '#333' }}>{title}</h2>
+    <p style={{ color: '#555' }}>{content}</p>
+  </div>
+);
+
 export default function Page() {
   const [data, setData] = useState('');
+  const [showIntro, setShowIntro] = useState(true);  // Control visibility of intro content
+
   const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [universityList, setUniversityList] = useState([]);
 
@@ -51,6 +61,7 @@ export default function Page() {
         console.log("Received data from server:", data);  // Log the data
 
         setData(data);
+        setShowIntro(false);
         setLoading(false);
       })
       .catch(error => {
@@ -59,6 +70,12 @@ export default function Page() {
         setLoading(false);
       });
   };
+
+  const introCards = [
+    { title: "Introduction", content: "This is the introduction to our application." },
+    { title: "Methodology", content: "Here we explain our methodology." },
+    { title: "About Us", content: "Information about our team." }
+  ];
 
   return (
     <div>
@@ -72,24 +89,21 @@ export default function Page() {
       </AppBar>
       <div>
         <h1>University Data</h1>
+        {showIntro && (
+        <div style={{ display: 'flex', justifyContent: 'space-around', margin: '20px' }}>
+          {introCards.map((card, index) => (
+            <IntroCard key={index} title={card.title} content={card.content} />
+          ))}
+        </div>
+      )}
         <SearchBar onSearch={handleSearch} universityList={universityList} />
         {loading && <p>Loading...</p>}
         {error && <p>Error: {error.message}</p>}
-        {/* <pre>{data ? JSON.stringify(data, null, 2) : 'No data'}</pre> */}
         <div>
           {data && <SchoolInfo data={data} />}
         </div>
       </div>
     </ThemeProvider>
-          <div>
-          <TextField label="test">
-          </TextField>
-          <h2>test</h2>
-            </div>
-
-
-
-
       </div>
       
   );
