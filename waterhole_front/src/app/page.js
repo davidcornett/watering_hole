@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import SearchBar from './components/SearchBar';
 import SchoolInfo from './components/SchoolInfo';
+import USChoroplethMap from './components/Map';
 
 
 const IntroCard = ({ title, content }) => (
@@ -72,9 +73,10 @@ export default function Page() {
   };
 
   const introCards = [
-    { title: "Introduction", content: "This is the introduction to our application." },
-    { title: "Methodology", content: "Here we explain our methodology." },
-    { title: "About Us", content: "Information about our team." }
+    { title: "Will my college thrive?", 
+    content: "Discover how shifting student populations across regions and states will uniquely impact college growth and finances. From steep declines to strong growth, find out where your institution stands in the ever-changing landscape of higher education." },
+    { title: "Demographic Cliff", 
+    content: "The overall pool of US students is shrinking, but this hides significant differences between states and regions. Also, elite schools will fare better, leaving even fewer prospective students for the rest. Some colleges are positioned to thrive while others will struggle to survive." }
   ];
 
   return (
@@ -82,8 +84,11 @@ export default function Page() {
     <ThemeProvider theme={theme}>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6">
+          <Typography variant="h6" style={{ flex: 1 }}>
             Search for your University
+          </Typography>
+          <Typography variant="h6">
+            Learn more about our methodology
           </Typography>
         </Toolbar>
       </AppBar>
@@ -103,6 +108,7 @@ export default function Page() {
           {data && <SchoolInfo data={data} />}
         </div>
       </div>
+      <USChoroplethMap />
     </ThemeProvider>
       </div>
       
