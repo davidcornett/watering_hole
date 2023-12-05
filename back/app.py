@@ -23,6 +23,37 @@ def get_universities():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/map_data', methods=['GET'])
+def get_map_data():
+
+    university_name = request.args.get('university')
+    #
+
+    # load csv
+    df = pd.read_csv('data/school_student_geography.csv')
+    match_df = pd.read_csv('data/id_name_table.csv')
+
+    matching_rows = match_df[match_df['name_with_state'] == university_name]
+
+    # Check if matching university is found
+    if not matching_rows.empty:
+        unit_id = matching_rows['unit_id'].iloc[0]  # Use iloc to access the first item
+        print(unit_id)
+    else:
+        # Handle the case where the university is not found
+        # You can return an error message or an empty response
+        return {'error': 'University not found'}
+    #unit_id = match_df[match_df['name'] == university_name]['unit_id'].values[0]
+    #print(unit_id)
+    university_row = df[df['UnitID'] == unit_id]
+    origins = university_row.iloc[0].to_dict()  # Convert the row to a dictionary
+
+    # Remove specific keys
+    keys_to_remove = ['SUM', 'US FR', 'UnitID', 'YR']
+    for key in keys_to_remove:
+        origins.pop(key, None)  # Removes the key if it exists, does nothing otherwise
+
+    return jsonify(origins)
 
 
 @app.route('/data', methods=['GET'])
