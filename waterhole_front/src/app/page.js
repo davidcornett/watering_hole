@@ -21,6 +21,7 @@ const IntroCard = ({ title, content }) => (
 
 export default function Page() {
   const [data, setData] = useState('');
+  const [mapData, setMapData] = useState('');
   const [showIntro, setShowIntro] = useState(true);  // Control visibility of intro content
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -48,6 +49,36 @@ export default function Page() {
   }, []); // empty dependency array ([]) ensures that the fetching logic runs only once when the component mounts
 
   const handleSearch = (term) => {
+    if (!term) return;
+  
+    setLoading(true);
+    Promise.all([
+      fetch(`http://localhost:4000/data?university=${encodeURIComponent(term)}`),
+      fetch(`http://localhost:4000/map_data?university=${encodeURIComponent(term)}`)
+    ])
+    .then(async ([dataResponse, mapDataResponse]) => {
+      if (!dataResponse.ok || !mapDataResponse.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await dataResponse.json();
+      const mapData = await mapDataResponse.json();
+  
+      setSearchTerm(term);
+      setData(data);
+      setMapData(mapData); // Assuming you have a state for map data
+      setShowIntro(false);
+    })
+    .catch(error => {
+      console.error('Fetch error:', error);
+      setError(error);
+    })
+    .finally(() => {
+      setLoading(false);
+    });
+  };
+  
+  /*
+  const handleSearch = (term) => {
     if (!term) return;  // Avoid searching when the input is empty
 
     setLoading(true);
@@ -71,6 +102,9 @@ export default function Page() {
         setLoading(false);
       });
   };
+  */
+
+
 
   const introCards = [
     { title: "Will my college thrive?", 
@@ -107,8 +141,14 @@ export default function Page() {
         <div>
           {data && <SchoolInfo data={data} />}
         </div>
+        <div>
+  {Object.entries(mapData).map(([key, value]) => (
+    <p key={key}>{key}: {value}</p>
+  ))}
+</div>
+
       </div>
-      <USChoroplethMap />
+      <USChoroplethMap mapData={mapData} universityName={searchTerm} />
     </ThemeProvider>
       </div>
       

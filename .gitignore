@@ -2,3 +2,4 @@
 **/*.csv
 **/key.key
 **/dupe_name_checker.py
+**/us-states-old.js
