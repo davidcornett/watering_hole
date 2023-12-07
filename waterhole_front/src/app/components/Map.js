@@ -4,24 +4,35 @@ import 'leaflet/dist/leaflet.css';
 import statesData from './us-states.js';
 
 
+
+//for dynamic data, use this:
 /*
-for dynamic data, use this:
 const getMaxStudents = (geoJsonData) => {
   // Assuming 'density' represents the number of students
   return Math.max(...geoJsonData.features.map(feature => feature.properties.density));
 };
+*/
+const getTotalStudents = (geoJsonData) => {
+  return geoJsonData.features.reduce((total, feature) => total + feature.properties.density, 0);
+};
 
-const getColor = (density, maxStudents) => {
-  const thresholds = [maxStudents * 0.5, maxStudents * 0.3, maxStudents * 0.1, 50, 20, 10, 5, 0];
-  const colors = ['#800026', '#BD0026', '#E31A1C', '#FC4E2A', '#FD8D3C', '#FEB24C', '#FED976', '#FFEDA0'];
+const getColor = (density, totalStudents) => {
+  console.log(totalStudents);
+
+  const thresholds = [0.85, 0.6, 0.2, 0.05, 0.02];
+
+  const colors = ['#800026', '#BD0026', '#FC4E2A', '#FEB24C', '#FED976'];
+  //const colors = ['#800026', '#BD0026', '#E31A1C', '#FC4E2A', '#FD8D3C', '#FEB24C', '#FED976', '#FFEDA0', 'rgba(0, 0, 0, 0)'];
 
   for (let i = 0; i < thresholds.length; i++) {
-    if (density > thresholds[i]) return colors[i];
+    if (density > thresholds[i] * totalStudents) return colors[i];
   }
+  if (density > 0)
+    return '#FFEDA0'
 
-  return colors[colors.length - 1];
+  return 'rgba(0, 0, 0, 0)';
 };
-*/
+
 const updateGeoJsonWithMapData = (geoJson, mapData) => {
   const updatedFeatures = geoJson.features.map(feature => {
     const stateAbbreviation = feature.properties.name;
@@ -39,7 +50,7 @@ const updateGeoJsonWithMapData = (geoJson, mapData) => {
 };
 
 
-
+/*
 
 const getColor = (d) => {
   // Define color scale
@@ -50,8 +61,10 @@ const getColor = (d) => {
          d > 50   ? '#FD8D3C' :
          d > 20   ? '#FEB24C' :
          d > 10   ? '#FED976' :
-                    '#FFEDA0';
+         d > 0    ? '#FFEDA0' :
+                    'rgba(0, 0, 0, 0)';  // Clear 
 };
+*/
 
 const baseStyle = {
     weight: 2,
@@ -61,10 +74,11 @@ const baseStyle = {
     fillOpacity: 0.7
   };
 
-const style = (feature) => {
+
+const style = (feature, maxStudents) => {
   return {
     ...baseStyle,
-    fillColor: getColor(feature.properties.density)
+    fillColor: getColor(feature.properties.density, maxStudents)
   };
 };
 
@@ -95,6 +109,7 @@ const USChoroplethMap = ({ mapData, universityName }) => {
   //const mapKey = mapData ? 'updated-map' : 'initial-map';
   const mapKey = `map-${universityName}`;
 
+  const maxStudents = getTotalStudents(updatedStatesData);
 
   return (
     <MapContainer center={[37.8, -96]} zoom={4} style={{ height: '500px', width: '100%' }}>
@@ -102,7 +117,7 @@ const USChoroplethMap = ({ mapData, universityName }) => {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
-      <GeoJSON key={mapKey} data={updatedStatesData} style={style} onEachFeature={onEachFeature} />
+      <GeoJSON key={mapKey} data={updatedStatesData} style={(feature) => style(feature, maxStudents)} onEachFeature={onEachFeature} />
     </MapContainer>
   );
 };
