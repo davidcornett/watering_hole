@@ -10,6 +10,7 @@ import TextField from '@mui/material/TextField';
 import SearchBar from './components/SearchBar';
 import SchoolInfo from './components/SchoolInfo';
 import USChoroplethMap from './components/Map';
+import OutlookCard from './components/OutlookCard';
 
 
 const IntroCard = ({ title, content }) => (
@@ -18,6 +19,7 @@ const IntroCard = ({ title, content }) => (
     <p style={{ color: '#555' }}>{content}</p>
   </div>
 );
+
 
 export default function Page() {
   const [data, setData] = useState('');
@@ -65,6 +67,7 @@ export default function Page() {
   
       setSearchTerm(term);
       setData(data);
+      console.log(data)
       setMapData(mapData); // Assuming you have a state for map data
       setShowIntro(false);
     })
@@ -138,17 +141,22 @@ export default function Page() {
         <SearchBar onSearch={handleSearch} universityList={universityList} />
         {loading && <p>Loading...</p>}
         {error && <p>Error: {error.message}</p>}
-        <div>
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
           {data && <SchoolInfo data={data} />}
+          {data && <OutlookCard data={data} />}
         </div>
-        <div>
-  {Object.entries(mapData).map(([key, value]) => (
-    <p key={key}>{key}: {value}</p>
-  ))}
-</div>
 
+
+        <div>
+        <USChoroplethMap mapData={mapData} universityName={searchTerm} />
+        {/*
+        {Object.entries(mapData).map(([key, value]) => (
+          <p key={key}>{key}: {value}</p>
+        ))}
+        */}
       </div>
-      <USChoroplethMap mapData={mapData} universityName={searchTerm} />
+      </div>
+      
     </ThemeProvider>
       </div>
       

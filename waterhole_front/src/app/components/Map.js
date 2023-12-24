@@ -17,8 +17,6 @@ const getTotalStudents = (geoJsonData) => {
 };
 
 const getColor = (density, totalStudents) => {
-  console.log(totalStudents);
-
   const thresholds = [0.85, 0.6, 0.2, 0.05, 0.02];
 
   const colors = ['#800026', '#BD0026', '#FC4E2A', '#FEB24C', '#FED976'];
