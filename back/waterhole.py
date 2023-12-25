@@ -46,7 +46,8 @@ class School:
             'unit_id': self.unit_id,
             'name_with_state': self.name_with_state,
             'students_2027': self.students_2027,
-            'students_change': self.student_change
+            'students_change': self.student_change,
+            'score': self.score
         }
 
 class School_Pipeline:
@@ -287,7 +288,6 @@ def main():
 
     # Save the key to a local file
     save_key(key, 'key.key')
-
     return schools_json_dict
 
 main()

@@ -52,7 +52,6 @@ def get_map_data():
     keys_to_remove = ['SUM', 'US FR', 'UnitID', 'YR']
     for key in keys_to_remove:
         origins.pop(key, None)  # Removes the key if it exists, does nothing otherwise
-
     return jsonify(origins)
 
 
@@ -94,7 +93,8 @@ def get_data():
                 **matching_school_2027, 
                 **matching_school_sidewalk_2027, 
                 'students_change': matching_school_2027['students_change'],
-                'students_change_sidewalk': matching_school_sidewalk_2027['students_change']
+                'students_change_sidewalk': matching_school_sidewalk_2027['students_change'],
+                'score': matching_school_2027['score']
             }
             return jsonify(combined_data)
         else:
