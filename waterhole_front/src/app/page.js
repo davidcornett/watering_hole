@@ -16,7 +16,7 @@ import OutlookCard from './components/OutlookCard';
 const IntroCard = ({ title, content }) => (
   <div style={{ margin: '20px', padding: '20px', border: '1px solid #ccc', borderRadius: '10px', backgroundColor: '#f9f9f9' }}>
     <h2 style={{ color: '#333' }}>{title}</h2>
-    <p style={{ color: '#555' }}>{content}</p>
+    <p style={{ color: '#555', textAlign: 'left' }}>{content}</p>
   </div>
 );
 
@@ -110,10 +110,10 @@ export default function Page() {
 
 
   const introCards = [
-    { title: "Will my college thrive?", 
-    content: "Discover how shifting student populations across regions and states will uniquely impact college growth and finances. From steep declines to strong growth, find out where your institution stands in the ever-changing landscape of higher education." },
     { title: "Demographic Cliff", 
-    content: "The overall pool of US students is shrinking, but this hides significant differences between states and regions. Also, elite schools will fare better, leaving even fewer prospective students for the rest. Some colleges are positioned to thrive while others will struggle to survive." }
+    content: "The overall pool of US students is shrinking, but this hides significant differences between states and regions. Colleges with student pipelines from growing areas are positioned to thrive while others will struggle to survive." },
+    { title: "Selectivity Matters",
+    content: "Elite schools will fare better. This leaves even fewer prospective students for the rest. Non-selective schools with poor demographics will have the highest risk of financial difficulties." }
   ];
 
   return (
@@ -130,18 +130,23 @@ export default function Page() {
         </Toolbar>
       </AppBar>
       <div>
-        <h1>University Data</h1>
-        {showIntro && (
-        <div style={{ display: 'flex', justifyContent: 'space-around', margin: '20px' }}>
-          {introCards.map((card, index) => (
-            <IntroCard key={index} title={card.title} content={card.content} />
-          ))}
+        <div style={{ textAlign: 'center', margin: '40px 0' }}>
+          <h1 style={{ fontSize: '2.5em', marginBottom: '10px' }}>Will My College Thrive?</h1>
+          <p style={{ fontSize: '1.2em', maxWidth: '800px', margin: 'auto', lineHeight: '1.6', color: '#999' }}>
+          Discover how changing demographics will uniquely impact each college.
+          </p>
+          {showIntro && (
+          <div style={{ display: 'flex', justifyContent: 'space-around', margin: '20px' }}>
+            {introCards.map((card, index) => (
+              <IntroCard key={index} title={card.title} content={card.content} />
+            ))}
+          </div>
+          )}
         </div>
-      )}
         <SearchBar onSearch={handleSearch} universityList={universityList} />
         {loading && <p>Loading...</p>}
         {error && <p>Error: {error.message}</p>}
-        <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <div style={{ display: 'flex', flexDfirection: 'row' }}>
           {data && <SchoolInfo data={data} />}
           {data && <OutlookCard data={data} />}
         </div>

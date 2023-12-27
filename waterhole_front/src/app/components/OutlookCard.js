@@ -1,12 +1,14 @@
 const STABILITY_THRESHOLD = .03;
 
 const OutlookCard = ({ data }) => {
-    let score = `Selectivity Score: ${data.score}`;
+    let scoreValue = Math.round(parseFloat(data.score));
+    let score = `Selectivity Score: ${scoreValue}%`;
+
     let totalChange = data.students_change;
     let stabilityStatus = `Stable over time (growth/decline within ±${100*STABILITY_THRESHOLD}% threshold)`;
 
     if (totalChange > STABILITY_THRESHOLD) {
-        stabilityStatus = 'Strong prospects, will likely grow';
+        stabilityStatus = 'Strong prospects: this school will easily grow';
     } else if (totalChange < -STABILITY_THRESHOLD) {
         stabilityStatus = (
             <div>
