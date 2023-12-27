@@ -6,7 +6,6 @@ import theme from '../theme';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
 import SearchBar from './components/SearchBar';
 import SchoolInfo from './components/SchoolInfo';
 import USChoroplethMap from './components/Map';
@@ -68,7 +67,7 @@ export default function Page() {
       setSearchTerm(term);
       setData(data);
       console.log(data)
-      setMapData(mapData); // Assuming you have a state for map data
+      setMapData(mapData);
       setShowIntro(false);
     })
     .catch(error => {
@@ -79,35 +78,6 @@ export default function Page() {
       setLoading(false);
     });
   };
-  
-  /*
-  const handleSearch = (term) => {
-    if (!term) return;  // Avoid searching when the input is empty
-
-    setLoading(true);
-    fetch(`http://localhost:4000/data?university=${encodeURIComponent(term)}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json(); // change to .text() if your backend sends plain text instead of JSON
-      })
-      .then(data => {
-        console.log("Received data from server:", data);  // Log the data
-
-        setData(data);
-        setShowIntro(false);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Fetch error:', error);
-        setError(error);
-        setLoading(false);
-      });
-  };
-  */
-
-
 
   const introCards = [
     { title: "Demographic Cliff", 
@@ -151,17 +121,12 @@ export default function Page() {
           {data && <OutlookCard data={data} />}
         </div>
 
-
         <div>
-        <USChoroplethMap mapData={mapData} universityName={searchTerm} />
-        {/*
-        {Object.entries(mapData).map(([key, value]) => (
-          <p key={key}>{key}: {value}</p>
-        ))}
-        */}
+          <h3 style={{ textAlign: 'center' }}>Map of student pipeline for {data.name} (darker shades indicate more students)</h3>
+          {data && <USChoroplethMap mapData={mapData} universityName={searchTerm} />}
+        </div>
       </div>
-      </div>
-      
+
     </ThemeProvider>
       </div>
       
