@@ -10,6 +10,7 @@ import SearchBar from './components/SearchBar';
 import SchoolInfo from './components/SchoolInfo';
 import USChoroplethMap from './components/Map';
 import OutlookCard from './components/OutlookCard';
+import SchoolNote from './components/SchoolNote';
 
 
 const IntroCard = ({ title, content }) => (
@@ -29,6 +30,8 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [universityList, setUniversityList] = useState([]);
+
+  const [showNote, setShowNote] = useState(false);
 
   useEffect(() => {
     // Fetch the list of universities from your backend
@@ -69,6 +72,8 @@ export default function Page() {
       console.log(data)
       setMapData(mapData);
       setShowIntro(false);
+      setShowNote(data.students_change > 0 && data.students_change_sidewalk < 0);
+
     })
     .catch(error => {
       console.error('Fetch error:', error);
@@ -119,11 +124,21 @@ export default function Page() {
         <div style={{ display: 'flex', flexDfirection: 'row' }}>
           {data && <SchoolInfo data={data} />}
           {data && <OutlookCard data={data} />}
+          
+        </div>
+
+        <div style={{ display: 'flex' }}>
+        {showNote && <SchoolNote />}
         </div>
 
         <div>
-          <h3 style={{ textAlign: 'center' }}>Map of student pipeline for {data.name} (darker shades indicate more students)</h3>
-          {data && <USChoroplethMap mapData={mapData} universityName={searchTerm} />}
+          {data && (
+          <>
+          <h3 style={{ textAlign: 'center' }}>Map of US student pipeline for {data.name} (darker shades indicate more students)</h3>
+          <USChoroplethMap mapData={mapData} universityName={searchTerm} />
+          </>
+          )
+          }
         </div>
       </div>
 
