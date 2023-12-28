@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import statesData from './us-states.js';
 
@@ -100,9 +101,27 @@ const onEachFeature = (feature, layer) => {
     });
   };
 
-const USChoroplethMap = ({ mapData, universityName }) => {
+const USChoroplethMap = ({ mapData, universityName, schoolCoords }) => {
   const updatedStatesData = mapData ? updateGeoJsonWithMapData(statesData, mapData) : statesData;
   //const updatedStatesData = updateGeoJsonWithMapData(statesData, mapData);
+
+  /*
+  const schoolIcon = new L.Icon({
+    iconUrl: './marker-32.png',
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
+  */
+
+  //const icon = L.icon({ iconUrl: "./marker-icon.png" });
+  const icon = new L.Icon({
+    iconUrl: './marker-icon.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
 
   //const mapKey = mapData ? 'updated-map' : 'initial-map';
   const mapKey = `map-${universityName}`;
@@ -116,6 +135,11 @@ const USChoroplethMap = ({ mapData, universityName }) => {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
       <GeoJSON key={mapKey} data={updatedStatesData} style={(feature) => style(feature, maxStudents)} onEachFeature={onEachFeature} />
+      {schoolCoords && 
+        <Marker position={[schoolCoords.lon, schoolCoords.lat]} icon={icon}>
+        <Popup>{universityName}</Popup>
+        </Marker>
+      }
     </MapContainer>
   );
 };

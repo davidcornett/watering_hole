@@ -135,7 +135,8 @@ export default function Page() {
           {data && (
           <>
           <h3 style={{ textAlign: 'center' }}>Map of US student pipeline for {data.name} (darker shades indicate more students)</h3>
-          <USChoroplethMap mapData={mapData} universityName={searchTerm} />
+          <USChoroplethMap mapData={mapData} universityName={searchTerm} schoolCoords={{ lat: data.latitude, lon: data.longitude }} />
+
           </>
           )
           }
