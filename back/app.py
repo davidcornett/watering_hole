@@ -104,6 +104,10 @@ def get_data():
     else:
         return "Please enter a valid university name."
 
+@app.route('/selectivity', methods=['GET'])
+def get_selectivity():
+    pass
+
 
 
 
