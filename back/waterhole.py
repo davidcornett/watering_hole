@@ -6,7 +6,7 @@ import json
 school_growth_target_rate = 0
 
 class School:
-    def __init__(self, unit_id, name, admit_rate, yield_rate, score, segment, state):
+    def __init__(self, unit_id, name, admit_rate, yield_rate, score, segment, state, latitude, longitude):
         self.unit_id = unit_id
         self.name = name
         self.admit_rate = admit_rate
@@ -15,6 +15,8 @@ class School:
         self.segment = segment
         self.home_state = state
         self.name_with_state = None
+        self.longitude = latitude
+        self.latitude = longitude
 
 
         self.students_2022 = 0
@@ -47,7 +49,9 @@ class School:
             'name_with_state': self.name_with_state,
             'students_2027': self.students_2027,
             'students_change': self.student_change,
-            'score': self.score
+            'score': self.score,
+            'latitude': self.latitude,
+            'longitude': self.longitude
         }
 
 class School_Pipeline:
@@ -229,7 +233,9 @@ def main():
             row['Yield %'],
             row['Score'],
             row['Segment'],
-            row['State']
+            row['State'],
+            row['Latitude'],
+            row['Longitude']
         )
         schools_dict[unit_id].set_name_with_state()
 

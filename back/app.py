@@ -94,13 +94,19 @@ def get_data():
                 **matching_school_sidewalk_2027, 
                 'students_change': matching_school_2027['students_change'],
                 'students_change_sidewalk': matching_school_sidewalk_2027['students_change'],
-                'score': matching_school_2027['score']
+                'score': matching_school_2027['score'],
+                'latitude': matching_school_2027['latitude'],
+                'longitude': matching_school_2027['longitude']
             }
             return jsonify(combined_data)
         else:
             return "School not found"
     else:
         return "Please enter a valid university name."
+
+@app.route('/selectivity', methods=['GET'])
+def get_selectivity():
+    pass
 
 
 

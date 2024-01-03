@@ -11,6 +11,8 @@ import SchoolInfo from './components/SchoolInfo';
 import USChoroplethMap from './components/Map';
 import OutlookCard from './components/OutlookCard';
 import SchoolNote from './components/SchoolNote';
+import DevCard from './components/DevCard';
+
 
 
 const IntroCard = ({ title, content }) => (
@@ -88,7 +90,7 @@ export default function Page() {
     { title: "Demographic Cliff", 
     content: "The overall pool of US students is shrinking, but this hides significant differences between states and regions. Colleges with student pipelines from growing areas are positioned to thrive while others will struggle to survive." },
     { title: "Selectivity Matters",
-    content: "Elite schools will fare better. This leaves even fewer prospective students for the rest. Non-selective schools with poor demographics will have the highest risk of financial difficulties." }
+    content: "Elite schools will fare better. This leaves even fewer graduating high school students for the rest. Non-selective schools with poor demographics will have the highest risk of financial difficulties." }
   ];
 
   return (
@@ -124,6 +126,7 @@ export default function Page() {
         <div style={{ display: 'flex', flexDfirection: 'row' }}>
           {data && <SchoolInfo data={data} />}
           {data && <OutlookCard data={data} />}
+          {data && <DevCard data={data} />}
           
         </div>
 
@@ -135,7 +138,8 @@ export default function Page() {
           {data && (
           <>
           <h3 style={{ textAlign: 'center' }}>Map of US student pipeline for {data.name} (darker shades indicate more students)</h3>
-          <USChoroplethMap mapData={mapData} universityName={searchTerm} />
+          <USChoroplethMap mapData={mapData} universityName={searchTerm} schoolCoords={{ lat: data.latitude, lon: data.longitude }} />
+
           </>
           )
           }
