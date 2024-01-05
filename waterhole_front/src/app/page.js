@@ -23,6 +23,13 @@ const IntroCard = ({ title, content }) => (
 );
 
 
+const introCardsStyle = {
+  display: 'flex',
+  justifyContent: 'space-around',
+  margin: '20px',
+  flexWrap: 'wrap' // This will allow cards to wrap onto the next line on smaller screens
+};
+
 export default function Page() {
   const [data, setData] = useState('');
   const [mapData, setMapData] = useState('');
@@ -39,7 +46,8 @@ export default function Page() {
     // Fetch the list of universities from your backend
     const fetchUniversityList = async () => {
       try {
-        const response = await fetch('http://localhost:4000/universities'); // Adjust the URL to your API endpoint
+        //const response = await fetch('http://localhost:4000/universities');
+        const response = await fetch('http://10.100.102.7:4000/universities');  
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -59,8 +67,8 @@ export default function Page() {
   
     setLoading(true);
     Promise.all([
-      fetch(`http://localhost:4000/data?university=${encodeURIComponent(term)}`),
-      fetch(`http://localhost:4000/map_data?university=${encodeURIComponent(term)}`)
+      fetch(`http://10.100.102.7:4000/data?university=${encodeURIComponent(term)}`),
+      fetch(`http://10.100.102.7:4000/map_data?university=${encodeURIComponent(term)}`)
     ])
     .then(async ([dataResponse, mapDataResponse]) => {
       if (!dataResponse.ok || !mapDataResponse.ok) {
@@ -93,6 +101,8 @@ export default function Page() {
     content: "Elite schools will fare better. This leaves even fewer graduating high school students for the rest. Non-selective schools with poor demographics will have the highest risk of financial difficulties." }
   ];
 
+  const isMobile = window.innerWidth <= 600;
+
   return (
     <div>
     <ThemeProvider theme={theme}>
@@ -101,9 +111,12 @@ export default function Page() {
           <Typography variant="h6" style={{ flex: 1 }}>
             Search for your University
           </Typography>
+          {/*
           <Typography variant="h6">
             Learn more about our methodology
           </Typography>
+          */
+  }
         </Toolbar>
       </AppBar>
       <div>
@@ -112,13 +125,20 @@ export default function Page() {
           <p style={{ fontSize: '1.2em', maxWidth: '800px', margin: 'auto', lineHeight: '1.6', color: '#999' }}>
           Discover how changing demographics will uniquely impact each college.
           </p>
+
           {showIntro && (
-          <div style={{ display: 'flex', justifyContent: 'space-around', margin: '20px' }}>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-around', 
+            margin: '20px',
+            flexWrap: isMobile ? 'wrap' : 'nowrap' // vertically align cards on mobile
+            }}>
             {introCards.map((card, index) => (
               <IntroCard key={index} title={card.title} content={card.content} />
             ))}
           </div>
           )}
+
         </div>
         <SearchBar onSearch={handleSearch} universityList={universityList} />
         {loading && <p>Loading...</p>}

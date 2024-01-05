@@ -109,7 +109,9 @@ def get_selectivity():
     pass
 
 
-
-
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=4000)
+"""
 if __name__ == '__main__':
     app.run(port=4000, debug=True)
+"""
