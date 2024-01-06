@@ -143,9 +143,13 @@ export default function Page() {
         <SearchBar onSearch={handleSearch} universityList={universityList} />
         {loading && <p>Loading...</p>}
         {error && <p>Error: {error.message}</p>}
-        <div style={{ display: 'flex', flexDfirection: 'row' }}>
-          {data && <SchoolInfo data={data} />}
+        <div style={{ 
+          display: 'flex', 
+          flexDfirection: 'row',
+          flexWrap: isMobile ? 'wrap' : 'nowrap' // vertically align cards on mobile
+          }}>
           {data && <OutlookCard data={data} />}
+          {data && <SchoolInfo data={data} />}
           {data && <DevCard data={data} />}
           
         </div>

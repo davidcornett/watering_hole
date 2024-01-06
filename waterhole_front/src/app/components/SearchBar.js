@@ -17,8 +17,8 @@ function SearchBar({ onSearch, universityList }) {
   };
 
   const handleButtonClick = () => {
-    onSearch("Harvard University (MA)");
-    //onSearch(inputValue);
+    //onSearch("Harvard University (MA)");
+    onSearch(inputValue);
   };
 
   return (
