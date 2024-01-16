@@ -24,20 +24,27 @@ const IntroCard = ({ title, content }) => (
 );
 
 
-/*
-const OrgCard = ({ title, content, image }) => (
-  <div style={{ margin: '20px', padding: '20px', border: '1px solid #ccc', borderRadius: '10px', backgroundColor: '#f9f9f9', textAlign: 'left',  maxWidth: '50%' }}>
+
+const OrgCard = ({ title, content, image, isMobile }) => (
+  <div style={{ margin: '20px', 
+                padding: '20px', 
+                border: '1px solid #ccc', 
+                borderRadius: '10px', 
+                backgroundColor: '#f9f9f9', 
+                textAlign: 'left',  
+                maxWidth: isMobile ? '100%' : '50%'
+                }}>
     <h2 style={{ color: '#333' }}>{title}</h2>
     <p style={{ color: '#555' }}>{content}</p>
     {image && <img 
     src={image} alt={title} style={{ 
-      width: '100px', 
+      width: '100%', 
       height: 'auto', 
       marginRight: '20px'}}
       />}
   </div>
 );
-*/
+/*
 const OrgCard = ({ title, content, image }) => (
   <div style={{ margin: '20px', padding: '20px', border: '1px solid #ccc', borderRadius: '10px', backgroundColor: '#f9f9f9', textAlign: 'left', maxWidth: '60%' }}>
     <h2 style={{ color: '#333' }}>{title}</h2>
@@ -51,6 +58,7 @@ const OrgCard = ({ title, content, image }) => (
     )}
   </div>
 );
+*/
 
 
 const introCardsStyle = {
@@ -137,7 +145,9 @@ export default function Page() {
     image: "/matrix.png"
   },
     { title: "Our Approach",
-    content: "We merge educational-specific datasets with demographic trends to model changes to net tuition and operating revenue for nearly 3,000 institutions." }
+    content: "We merge educational-specific datasets with demographic trends to model changes to net tuition and operating revenue for nearly 3,000 institutions. Here is the overall landscape in 2032:",
+    image: "/piechart.png" 
+  }
   ];
 
   const isMobile = window.innerWidth <= 600;
@@ -145,18 +155,25 @@ export default function Page() {
   return (
     <div>
     <ThemeProvider theme={theme}>
-      <AppBar position="static">
+      <AppBar position="static" style={{ backgroundColor: '#05656b' }}>
         <Toolbar>
+        <img src="/logo_simple.png" alt="Logo" style={{ height: '50px', marginRight: '20px' }} />
 
           <Button
             color="inherit"
-            onClick={() => setShowOrgs(false)} // show org content
+            onClick={() => {
+              setShowOrgs(false); // show org content
+              setShowIntro(true); // show intro content
+            }}
             sx={{ textTransform: 'none' }}
           >
-          <Typography variant="h6" style={{ flex: 1 }}>
-            Search for your University
+          <Typography variant="h6" style={{ flex: 1, color: "#fffcbc"}}>
+            University Search
           </Typography>
           </Button>
+
+          {/* spacer to push next button to the right */}
+          <Typography style={{ flexGrow: 1 }}></Typography>
           
           <Button
             color="inherit"
@@ -166,23 +183,41 @@ export default function Page() {
             }} 
             sx={{ textTransform: 'none' }}
           >
-          <Typography variant="h6">
+          <Typography variant="h6" style={{color: "#fffcbc"}}>
             Solutions for Organizations
           </Typography>
           </Button>
   
         </Toolbar>
       </AppBar>
+      {/*}
+      <img src="/logo_big.png" alt="Logo" style={{ height: '150px', marginRight: '20px' }} />
+      <img src="/logo_small.png" alt="Logo" style={{ height: '150px', marginRight: '20px' }} />
+      <img src="/logo_simple.png" alt="Logo" style={{ height: '50px', marginRight: '20px' }} />
+          */}
       <div>
         <div style={{ textAlign: 'center', margin: '40px 0' }}>
 
-        
         {showIntro && (
           <>
+          <img src="/logo_big.png" alt="Logo" style={{ height: '250px', marginRight: '20px' }} />
           <h1 style={{ fontSize: '2.5em', marginBottom: '10px' }}>Will My College Thrive?</h1>
           <p style={{ fontSize: '1.2em', maxWidth: '800px', margin: 'auto', lineHeight: '1.6', color: '#999' }}>
           Discover how changing demographics will uniquely impact each college.
           </p>
+          </>
+        )}
+
+        { !showOrgs && (
+        <>
+          <SearchBar onSearch={handleSearch} universityList={universityList} />
+          {loading && <p>Loading...</p>}
+          {error && <p>Error: {error.message}</p>}
+        </>
+          )}
+
+
+        {showIntro && (
           <div style={{ 
             display: 'flex', 
             justifyContent: 'space-around', 
@@ -194,35 +229,32 @@ export default function Page() {
             
             ))}
           </div>
-          </>
-          )}
+        )}
         </div>
 
-        { !showOrgs && (
-        <>
-          <SearchBar onSearch={handleSearch} universityList={universityList} />
-          {loading && <p>Loading...</p>}
-          {error && <p>Error: {error.message}</p>}
-        </>
-          )}
+
 
         <div style={{ 
           display: 'flex', 
           flexDfirection: 'row',
           flexWrap: isMobile ? 'wrap' : 'nowrap' // vertically align cards on mobile
           }}>
+          {!showOrgs &&
+          <>
           {data && <OutlookCard data={data} />}
           {data && <SchoolInfo data={data} />}
           {data && <DevCard data={data} />}
+          </>
+          }
           
         </div>
 
         <div style={{ display: 'flex' }}>
-        {showNote && <SchoolNote />}
+        {showNote && !showOrgs && <SchoolNote />}
         </div>
 
         <div>
-          {data && (
+          {data && !showOrgs && (
           <>
           <h3 style={{ textAlign: 'center' }}>Map of US student pipeline for {data.name} (darker shades indicate more students)</h3>
           <USChoroplethMap mapData={mapData} universityName={searchTerm} schoolCoords={{ lat: data.latitude, lon: data.longitude }} />
@@ -239,14 +271,6 @@ export default function Page() {
             <h1 style={{ fontSize: '2.5em', marginBottom: '10px' }}>Leverage Our Model to Grow Your Business</h1>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-around', margin: '20px', flexWrap: 'wrap', alignItems: 'start' }}>
-            {orgCards.map((card, index) => (
-              <OrgCard key={index} title={card.title} content={card.content} image={card.image} />
-            ))}
-          </div>
-
-
-          {/*
           <div style={{ 
             display: 'flex', 
             justifyContent: 'space-around', 
@@ -254,10 +278,24 @@ export default function Page() {
             flexWrap: isMobile ? 'wrap' : 'nowrap' // vertically align cards on mobile
             }}>
             {orgCards.map((card, index) => (
-              <OrgCard key={index} title={card.title} content={card.content} image={card.image}/>
+              <OrgCard key={index} title={card.title} content={card.content} image={card.image} isMobile={isMobile}/>
+            ))}
+          </div>
+
+          {/*
+
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-around', 
+            margin: '20px', 
+            flexWrap: 'wrap', 
+            alignItems: 'start' }}>
+            {orgCards.map((card, index) => (
+              <OrgCard key={index} title={card.title} content={card.content} image={card.image} />
             ))}
           </div>
           */}
+          
           </>
           )}
 

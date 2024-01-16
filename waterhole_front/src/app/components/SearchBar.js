@@ -12,7 +12,7 @@ function SearchBar({ onSearch, universityList }) {
   const handleInputChange = (event, newInputValue) => {
     setInputValue(newInputValue);
     // this works: 
-    console.log(newInputValue);
+    //console.log(newInputValue);
     setOpen(newInputValue.length > 0);  // Open dropdown only if there's input
   };
 
@@ -20,8 +20,9 @@ function SearchBar({ onSearch, universityList }) {
     //onSearch("Harvard University (MA)");
     onSearch(inputValue);
   };
-
+  {/*
   return (
+    
     <div>
       <Autocomplete
         freeSolo
@@ -43,46 +44,32 @@ function SearchBar({ onSearch, universityList }) {
       </Button>
     </div>
   );
-}
-
-export default SearchBar;
-/*
-
-function SearchBar({ onSearch, universityList }) {
-  const [inputValue, setInputValue] = useState('');
-
-  const handleInputChange = (event, newInputValue) => {
-    setInputValue(newInputValue);
-  };
-
-  const handleButtonClick = () => {
-    onSearch(inputValue);
-  };
-
+  */}
   return (
-    <div>
+    <div style={{ marginLeft: '40px', marginRight: '40px' }}> 
       <Autocomplete
         freeSolo
-        disableClearable
-        inputValue={inputValue}
-        onInputChange={handleInputChange}
-        options={universityList.map((option) => option.title)}
-        filterOptions={(options) => inputValue ? options : []} // Filter options based on whether the user has inputted something
+        open={open}
+        onOpen={() => {
+          if (inputValue.length > 0) {
+            setOpen(true);
+          }
+        }}
+        onClose={() => setOpen(false)}
+        options={universityList}
         renderInput={(params) => (
-          <TextField 
-            {...params} 
-            label="Search for a University" 
-            variant="outlined" 
-            fullWidth 
-          />
+          <TextField {...params} label="Search for a University" variant="outlined" fullWidth />
         )}
+        onInputChange={handleInputChange}
       />
-      <Button variant="contained" color="primary" onClick={handleButtonClick} onTouchEnd={handleButtonClick}>
-        Search
-      </Button>
+      <div style={{ textAlign: 'left', marginTop: '10px'}}> {/* Align button to the left */}
+        <Button variant="contained" color="primary" onClick={handleButtonClick} style={{backgroundColor: '#05656b', color: '#fffcbc'}}>
+          Search
+        </Button>
+      </div>
     </div>
   );
+  
 }
 
 export default SearchBar;
-*/
