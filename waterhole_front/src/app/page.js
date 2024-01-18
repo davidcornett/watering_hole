@@ -15,7 +15,6 @@ import SchoolNote from './components/SchoolNote';
 import DevCard from './components/DevCard';
 
 
-
 const IntroCard = ({ title, content }) => (
   <div style={{ margin: '20px', padding: '20px', border: '1px solid #ccc', borderRadius: '10px', backgroundColor: '#f9f9f9' }}>
     <h2 style={{ color: '#333' }}>{title}</h2>
@@ -154,10 +153,11 @@ export default function Page() {
 
   return (
     <div>
+      
     <ThemeProvider theme={theme}>
       <AppBar position="static" style={{ backgroundColor: '#05656b' }}>
         <Toolbar>
-        <img src="/logo_simple.png" alt="Logo" style={{ height: '50px', marginRight: '20px' }} />
+        <img src="/logo_clear_simple.png" alt="Logo" style={{ height: '50px', marginRight: '20px' }} />
 
           <Button
             color="inherit"
@@ -190,17 +190,32 @@ export default function Page() {
   
         </Toolbar>
       </AppBar>
-      {/*}
-      <img src="/logo_big.png" alt="Logo" style={{ height: '150px', marginRight: '20px' }} />
-      <img src="/logo_small.png" alt="Logo" style={{ height: '150px', marginRight: '20px' }} />
-      <img src="/logo_simple.png" alt="Logo" style={{ height: '50px', marginRight: '20px' }} />
-          */}
+
       <div>
         <div style={{ textAlign: 'center', margin: '40px 0' }}>
 
         {showIntro && (
           <>
-          <img src="/logo_big.png" alt="Logo" style={{ height: '250px', marginRight: '20px' }} />
+          <div style={{ position: 'relative', display: 'inline-block' }}>
+              <img src="/logo_clear.png" alt="Your Logo" style={{ height: '250px', width: 'auto' }} />
+              <span className="logo" style={{ 
+                  position: 'absolute', 
+                  top: '20%', 
+                  left: '50%', 
+                  transform: 'translate(-50%, -50%)', 
+                  fontSize: '36px',
+                  fontWeight: '400'
+              }}>
+                  <span style={{ color: '#002542' }}>Ed</span>
+                  <span style={{ color: '#fffcbc' }}>Traverse</span>
+              </span>
+          </div>
+
+        
+
+          {/*
+          <img src="/logo_clear.png" alt="Logo" style={{ height: '250px', marginRight: '20px' }} />
+          */}
           <h1 style={{ fontSize: '2.5em', marginBottom: '10px' }}>Will My College Thrive?</h1>
           <p style={{ fontSize: '1.2em', maxWidth: '800px', margin: 'auto', lineHeight: '1.6', color: '#999' }}>
           Discover how changing demographics will uniquely impact each college.
@@ -281,20 +296,6 @@ export default function Page() {
               <OrgCard key={index} title={card.title} content={card.content} image={card.image} isMobile={isMobile}/>
             ))}
           </div>
-
-          {/*
-
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-around', 
-            margin: '20px', 
-            flexWrap: 'wrap', 
-            alignItems: 'start' }}>
-            {orgCards.map((card, index) => (
-              <OrgCard key={index} title={card.title} content={card.content} image={card.image} />
-            ))}
-          </div>
-          */}
           
           </>
           )}
