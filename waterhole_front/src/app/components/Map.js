@@ -101,20 +101,10 @@ const onEachFeature = (feature, layer) => {
     });
   };
 
-const USChoroplethMap = ({ mapData, universityName, schoolCoords }) => {
+const USChoroplethMap = ({ mapData, universityName, schoolCoords, isMobile }) => {
   const updatedStatesData = mapData ? updateGeoJsonWithMapData(statesData, mapData) : statesData;
-  //const updatedStatesData = updateGeoJsonWithMapData(statesData, mapData);
+  const zoomLevel = isMobile ? 3 : 4;
 
-  /*
-  const schoolIcon = new L.Icon({
-    iconUrl: './marker-32.png',
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
-  */
-
-  //const icon = L.icon({ iconUrl: "./marker-icon.png" });
   const icon = new L.Icon({
     iconUrl: './marker-icon.png',
     iconSize: [25, 41],
@@ -123,13 +113,12 @@ const USChoroplethMap = ({ mapData, universityName, schoolCoords }) => {
     shadowSize: [41, 41]
   });
 
-  //const mapKey = mapData ? 'updated-map' : 'initial-map';
   const mapKey = `map-${universityName}`;
 
   const maxStudents = getTotalStudents(updatedStatesData);
 
   return (
-    <MapContainer center={[37.8, -96]} zoom={4} style={{ height: '500px', width: '100%' }}>
+    <MapContainer center={[37.8, -96]} zoom={zoomLevel} style={{ height: '500px', width: '100%' }}>
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
