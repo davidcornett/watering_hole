@@ -15,13 +15,22 @@ import SchoolNote from './components/SchoolNote';
 import DevCard from './components/DevCard';
 
 
+const getUnderLineStyle = (isCurrentPage) => {
+  return {
+    borderBottom: isCurrentPage ? '3px solid #fffcbc' : 'none', // Adjust the thickness and color as needed
+    color: "#fffcbc",
+    flex: 1,
+    textTransform: 'none'
+  };
+};
+
+
 const IntroCard = ({ title, content }) => (
   <div style={{ margin: '20px', padding: '20px', border: '1px solid #ccc', borderRadius: '10px', backgroundColor: '#f9f9f9' }}>
     <h2 style={{ color: '#333' }}>{title}</h2>
     <p style={{ color: '#555', textAlign: 'left' }}>{content}</p>
   </div>
 );
-
 
 
 const OrgCard = ({ title, content, image, isMobile }) => (
@@ -155,7 +164,7 @@ export default function Page() {
     <div>
       
     <ThemeProvider theme={theme}>
-      <AppBar position="static" style={{ backgroundColor: '#05656b' }}>
+      <AppBar className="button" position="static" style={{ backgroundColor: '#05656b' }}>
         <Toolbar>
         <img src="/logo_clear_simple.png" alt="Logo" style={{ height: '50px', marginRight: '20px' }} />
 
@@ -167,7 +176,7 @@ export default function Page() {
             }}
             sx={{ textTransform: 'none' }}
           >
-          <Typography variant="h6" style={{ flex: 1, color: "#fffcbc"}}>
+          <Typography variant="h6" style={getUnderLineStyle(!showOrgs)}>
             University Search
           </Typography>
           </Button>
@@ -176,6 +185,7 @@ export default function Page() {
           <Typography style={{ flexGrow: 1 }}></Typography>
           
           <Button
+            className="button"
             color="inherit"
             onClick={() => {
               setShowOrgs(true);
@@ -183,7 +193,7 @@ export default function Page() {
             }} 
             sx={{ textTransform: 'none' }}
           >
-          <Typography variant="h6" style={{color: "#fffcbc"}}>
+          <Typography variant="h6" style={getUnderLineStyle(showOrgs)}>
             Solutions for Organizations
           </Typography>
           </Button>
@@ -196,6 +206,7 @@ export default function Page() {
 
         {showIntro && (
           <>
+
           <div style={{ position: 'relative', display: 'inline-block' }}>
               <img src="/logo_clear.png" alt="Your Logo" style={{ height: '250px', width: 'auto' }} />
               <span className="logo" style={{ 
@@ -218,7 +229,7 @@ export default function Page() {
           */}
           <h1 style={{ fontSize: '2.5em', marginBottom: '10px' }}>Will My College Thrive?</h1>
           <p style={{ fontSize: '1.2em', maxWidth: '800px', margin: 'auto', lineHeight: '1.6', color: '#999' }}>
-          Discover how changing demographics will uniquely impact each college.
+          Discover how changing demographics will uniquely impact each educational institution.
           </p>
           </>
         )}
@@ -282,9 +293,32 @@ export default function Page() {
 
         {showOrgs && (
           <>
-          <div style={{ textAlign: 'center', margin: '40px 0' }}>
-            <h1 style={{ fontSize: '2.5em', marginBottom: '10px' }}>Leverage Our Model to Grow Your Business</h1>
+          <div style={{
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              margin: '40px 0'
+          }}>
+              <img src="/logo_clear_simple.png" alt="Your Logo" style={{ height: '250px', width: 'auto' }} />
+              <div style={{ 
+                  display: 'flex',
+                  alignItems: 'center',
+                  backgroundColor: '#05656b', 
+                  padding: '10px', // Adjust padding to control the size of the box
+                  height: '250px', // Match the height of the logo
+                  boxSizing: 'border-box' // Ensures padding is included in height calculation
+              }}>
+                  <h1 style={{ 
+                      fontSize: '2.5em', 
+                      marginRight: '40px', // Add some space between the logo and text
+                      marginBottom: '0', // Remove the bottom margin to align with the bottom of the box
+                      color: '#fffcbc' // Optional: Change text color for contrast
+                  }}>
+                      Leverage Our Model to Grow Your Business
+                  </h1>
+              </div>
           </div>
+
 
           <div style={{ 
             display: 'flex', 

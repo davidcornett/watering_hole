@@ -63,7 +63,11 @@ function SearchBar({ onSearch, universityList }) {
         onInputChange={handleInputChange}
       />
       <div style={{ textAlign: 'left', marginTop: '10px'}}> {/* Align button to the left */}
-        <Button variant="contained" color="primary" onClick={handleButtonClick} style={{backgroundColor: '#05656b', color: '#fffcbc'}}>
+        <Button variant="contained" color="primary" onClick={handleButtonClick} 
+        style={{
+          backgroundColor: '#05656b', 
+          color: '#fffcbc'
+        }}>
           Search
         </Button>
       </div>
