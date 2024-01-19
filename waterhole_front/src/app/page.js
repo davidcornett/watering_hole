@@ -13,6 +13,8 @@ import USChoroplethMap from './components/Map';
 import OutlookCard from './components/OutlookCard';
 import SchoolNote from './components/SchoolNote';
 import DevCard from './components/DevCard';
+import ContactCard from './components/ContactCard';
+import Head from 'next/head';
 
 
 const getUnderLineStyle = (isCurrentPage) => {
@@ -162,6 +164,10 @@ export default function Page() {
 
   return (
     <div>
+
+      <Head>
+        <title>My Custom Page Title</title>
+      </Head>
       
     <ThemeProvider theme={theme}>
       <AppBar className="button" position="static" style={{ backgroundColor: '#05656b' }}>
@@ -222,8 +228,6 @@ export default function Page() {
               </span>
           </div>
 
-        
-
           {/*
           <img src="/logo_clear.png" alt="Logo" style={{ height: '250px', marginRight: '20px' }} />
           */}
@@ -257,8 +261,6 @@ export default function Page() {
           </div>
         )}
         </div>
-
-
 
         <div style={{ 
           display: 'flex', 
@@ -314,7 +316,7 @@ export default function Page() {
                       marginBottom: '0', // Remove the bottom margin to align with the bottom of the box
                       color: '#fffcbc' // Optional: Change text color for contrast
                   }}>
-                      Leverage Our Model to Grow Your Business
+                      Leverage Our Higher Education Insights to Grow Your Business
                   </h1>
               </div>
           </div>
@@ -330,6 +332,7 @@ export default function Page() {
               <OrgCard key={index} title={card.title} content={card.content} image={card.image} isMobile={isMobile}/>
             ))}
           </div>
+          <ContactCard />
           
           </>
           )}
@@ -337,6 +340,36 @@ export default function Page() {
 
 
       </div>
+      <footer style={{ backgroundColor: '#2a2a2a', padding: '20px', textAlign: 'center' }}>
+        <div style={{ marginBottom: '15px', color: '#dcdcdc' }}>
+            <p>Email: dcornett@edtraverse.com</p>
+        </div>
+
+        <div style={{ marginBottom: '15px', color: '#dcdcdc' }}>
+            <p>© 2024 EdTraverse. All Rights Reserved.</p>
+        </div>
+
+        <div style={{ color: '#dcdcdc', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+          <div style={{ flex: 1, minWidth: '300px', margin: '10px', textAlign: 'left' }}>
+              <strong>About EdTraverse</strong>
+              <p> EdTraverse empowers prospective college students, parents, organizations, and other stakeholders
+                successfully traverse the changing landscape of higher education. Our first service predicts the 
+                growth or decline of nearly 3,000 US educational institutions based on demographic trends.
+              </p><br></br>
+              <p>David Cornett founded EdTraverse to navigate the societal, cultural, and technological
+                changes impacting higher education. He brings more than a decade of strategic progam leadership, product development,
+                financial analysis, and managing emerging risks at the leading insurance & risk management company for educational institutions.
+              </p>
+          </div>
+          <div style={{ flex: 1, minWidth: '300px', margin: '10px', textAlign: 'left' }}>
+          <strong>Disclaimer</strong>
+              <p>Our model captures important factors impacting school trajectories: selectivity and demographics.
+                However, additional factors will also impact educational institutions, including their leadership decisions,
+                vision & mission, financial strength, debt usage, research activities, acedemic program management, 
+                alumni & donor base, and athletic success. </p>
+          </div>
+        </div>
+    </footer>
 
     </ThemeProvider>
       </div>
