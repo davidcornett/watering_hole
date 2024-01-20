@@ -13,8 +13,7 @@ import USChoroplethMap from './components/Map';
 import OutlookCard from './components/OutlookCard';
 import SchoolNote from './components/SchoolNote';
 import ContactCard from './components/ContactCard';
-import Head from 'next/head';
-
+import OfferCard from './components/OfferCard';
 
 const getUnderLineStyle = (isCurrentPage) => {
   return {
@@ -77,6 +76,7 @@ export default function Page() {
   const [mapData, setMapData] = useState('');
   const [showIntro, setShowIntro] = useState(true);  // Control visibility of intro content
   const [showOrgs, setShowOrgs] = useState(false);  // Control visibility of org content
+  const [showContact, setShowContact] = useState(false); // Control visibility of contact form
 
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
@@ -105,9 +105,21 @@ export default function Page() {
   }, []); // empty dependency array ([]) ensures that the fetching logic runs only once when the component mounts
 
   const handleSearch = (term) => {
-    if (!term) return;
-  
+    if (!term) {
+      return
+    }
+
+    // Check if the entered university name exists in the list
+    const isValidUniversity = universityList.some(university => university === term);
+
+    if (!isValidUniversity) {
+      alert("Please select from an available university. Start typing the name of your school and then click on it in the dropdown.")
+      setError('University not found. Please enter a valid university name from the list.');
+      return;
+    }
+
     setLoading(true);
+    setError(null); // Reset any previous errors
     Promise.all([
       fetch(`http://10.100.102.7:4000/data?university=${encodeURIComponent(term)}`),
       fetch(`http://10.100.102.7:4000/map_data?university=${encodeURIComponent(term)}`)
@@ -136,6 +148,13 @@ export default function Page() {
     });
   };
 
+  const handleLearnMore = () => {
+    setShowNote(false);
+    setShowResults(false);
+    setShowContact(true);
+  };
+
+
   const introCards = [
     { title: "Demographic Cliff", 
     content: "The overall pool of US students is shrinking, but this hides significant differences between states and regions. Colleges with student pipelines from growing areas are positioned to thrive while others will struggle to survive." },
@@ -158,11 +177,6 @@ export default function Page() {
 
   return (
     <div>
-
-      <Head>
-        <title>My Custom Page Title</title>
-      </Head>
-      
     <ThemeProvider theme={theme}>
       <AppBar className="button" position="static" style={{ backgroundColor: '#05656b' }}>
         <Toolbar>
@@ -174,6 +188,7 @@ export default function Page() {
               setShowOrgs(false); // show org content
               setShowIntro(true); // show intro content
               setShowResults(false); // refresh hides results
+              setShowContact(false); // hide contact form
             }}
             sx={{ textTransform: 'none' }}
           >
@@ -234,7 +249,7 @@ export default function Page() {
         <>
           <SearchBar onSearch={handleSearch} universityList={universityList} />
           {loading && <p>Loading...</p>}
-          {error && <p>Error: {error.message}</p>}
+          {/*error && <p>Error: {error.message}</p>*/}
         </>
           )}
 
@@ -254,20 +269,29 @@ export default function Page() {
         </div>
 
         <div style={{ 
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, max-content))', // Adjust minmax values as needed
+          gap: '10px', // Space between cards
+          justifyContent: 'left', // Center the cards in the container
+          alignItems: 'start', // Align cards to the start of their respective grid cells
+          marginLeft: '20px',
+          /*
           display: 'flex', 
           flexDfirection: 'row',
           flexWrap: isMobile ? 'wrap' : 'nowrap' // vertically align cards on mobile
+          */
           }}>
           {!showOrgs &&
           <>
           {showResults && <OutlookCard data={data} />}
           {showResults && <SchoolInfo data={data} />}
+          {showResults && !isMobile && <OfferCard learnMore={handleLearnMore} />}
           </>
           }
           
         </div>
 
-        <div style={{ display: 'flex' }}>
+        <div style={{ display: 'flex', marginLeft: '20px' }}>
         {showNote && !showOrgs && <SchoolNote />}
         </div>
 
@@ -328,10 +352,13 @@ export default function Page() {
               <OrgCard key={index} title={card.title} content={card.content} image={card.image} isMobile={isMobile}/>
             ))}
           </div>
-          <ContactCard isMobile={isMobile}/>
-          
           </>
           )}
+
+          {(showOrgs || showContact) && (
+        <ContactCard isMobile={isMobile}/>
+        )}
+    
 
       </div>
       <footer style={{ backgroundColor: '#2a2a2a', padding: '20px', textAlign: 'center' }}>

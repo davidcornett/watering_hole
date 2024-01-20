@@ -6,10 +6,10 @@ const OutlookCard = ({ data }) => {
     let color;
 
     let totalChange = data.students_change;
-    let stabilityStatus = `Stable - growth/decline within ±${100*STABILITY_THRESHOLD}%`;
+    let stabilityStatus = `Stable (growth/decline within ±${100*STABILITY_THRESHOLD}%)`;
 
     if (totalChange > STABILITY_THRESHOLD) {
-        stabilityStatus = `Strong growth potential - ${100 * STABILITY_THRESHOLD}%+`;
+        stabilityStatus = `Strong growth potential (${100 * STABILITY_THRESHOLD}%+)`;
         color = 'green';
     } else if (totalChange < -STABILITY_THRESHOLD) {
         color = 'red';
