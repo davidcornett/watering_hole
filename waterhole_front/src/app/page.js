@@ -12,7 +12,6 @@ import SchoolInfo from './components/SchoolInfo';
 import USChoroplethMap from './components/Map';
 import OutlookCard from './components/OutlookCard';
 import SchoolNote from './components/SchoolNote';
-import DevCard from './components/DevCard';
 import ContactCard from './components/ContactCard';
 import Head from 'next/head';
 
@@ -46,30 +45,22 @@ const OrgCard = ({ title, content, image, isMobile }) => (
                 }}>
     <h2 style={{ color: '#333' }}>{title}</h2>
     <p style={{ color: '#555' }}>{content}</p>
-    {image && <img 
-    src={image} alt={title} style={{ 
-      width: '100%', 
-      height: 'auto', 
-      marginRight: '20px'}}
-      />}
-  </div>
-);
-/*
-const OrgCard = ({ title, content, image }) => (
-  <div style={{ margin: '20px', padding: '20px', border: '1px solid #ccc', borderRadius: '10px', backgroundColor: '#f9f9f9', textAlign: 'left', maxWidth: '60%' }}>
-    <h2 style={{ color: '#333' }}>{title}</h2>
-    <p style={{ color: '#555' }}>{content}</p>
     {image && (
-      <img 
-        src={image} 
-        alt={title} 
-        style={{ width: '100%', height: 'auto', display: 'block', marginTop: '20px' }} 
-      />
+        <>
+          <div style={{ height: '20px' }}></div> {/* Blank line / space */}
+          <img 
+            src={image} 
+            alt={title} 
+            style={{ 
+              width: '100%', 
+              height: 'auto', 
+              marginRight: '20px'
+            }}
+          />
+        </>
     )}
   </div>
 );
-*/
-
 
 const introCardsStyle = {
   display: 'flex',
@@ -80,6 +71,9 @@ const introCardsStyle = {
 
 export default function Page() {
   const [data, setData] = useState('');
+  const [showResults, setShowResults] = useState(false); // visibility of Outlook Card, School Info
+  const [showNote, setShowNote] = useState(false); // visibility of School contextual note
+
   const [mapData, setMapData] = useState('');
   const [showIntro, setShowIntro] = useState(true);  // Control visibility of intro content
   const [showOrgs, setShowOrgs] = useState(false);  // Control visibility of org content
@@ -89,13 +83,12 @@ export default function Page() {
   const [error, setError] = useState(null);
   const [universityList, setUniversityList] = useState([]);
 
-  const [showNote, setShowNote] = useState(false);
+
 
   useEffect(() => {
     // Fetch the list of universities from your backend
     const fetchUniversityList = async () => {
       try {
-        //const response = await fetch('http://localhost:4000/universities');
         const response = await fetch('http://10.100.102.7:4000/universities');  
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -129,6 +122,7 @@ export default function Page() {
       setSearchTerm(term);
       setData(data);
       setMapData(mapData);
+      setShowResults(true);
       setShowIntro(false);
       setShowNote(data.students_change > 0 && data.students_change_sidewalk < 0);
 
@@ -179,6 +173,7 @@ export default function Page() {
             onClick={() => {
               setShowOrgs(false); // show org content
               setShowIntro(true); // show intro content
+              setShowResults(false); // refresh hides results
             }}
             sx={{ textTransform: 'none' }}
           >
@@ -196,6 +191,7 @@ export default function Page() {
             onClick={() => {
               setShowOrgs(true);
               setShowIntro(false);
+            
             }} 
             sx={{ textTransform: 'none' }}
           >
@@ -212,7 +208,6 @@ export default function Page() {
 
         {showIntro && (
           <>
-
           <div style={{ position: 'relative', display: 'inline-block' }}>
               <img src="/logo_clear.png" alt="Your Logo" style={{ height: '250px', width: 'auto' }} />
               <span className="logo" style={{ 
@@ -228,9 +223,6 @@ export default function Page() {
               </span>
           </div>
 
-          {/*
-          <img src="/logo_clear.png" alt="Logo" style={{ height: '250px', marginRight: '20px' }} />
-          */}
           <h1 style={{ fontSize: '2.5em', marginBottom: '10px' }}>Will My College Thrive?</h1>
           <p style={{ fontSize: '1.2em', maxWidth: '800px', margin: 'auto', lineHeight: '1.6', color: '#999' }}>
           Discover how changing demographics will uniquely impact each educational institution.
@@ -245,7 +237,6 @@ export default function Page() {
           {error && <p>Error: {error.message}</p>}
         </>
           )}
-
 
         {showIntro && (
           <div style={{ 
@@ -269,9 +260,8 @@ export default function Page() {
           }}>
           {!showOrgs &&
           <>
-          {data && <OutlookCard data={data} />}
-          {data && <SchoolInfo data={data} />}
-          {data && <DevCard data={data} />}
+          {showResults && <OutlookCard data={data} />}
+          {showResults && <SchoolInfo data={data} />}
           </>
           }
           
@@ -282,7 +272,7 @@ export default function Page() {
         </div>
 
         <div>
-          {data && !showOrgs && (
+          {showResults && !showOrgs && (
           <>
           <h3 style={{ textAlign: 'center' }}>Map of US student pipeline for {data.name} (darker shades indicate more students)</h3>
           <USChoroplethMap mapData={mapData} universityName={searchTerm} schoolCoords={{ lat: data.latitude, lon: data.longitude }} isMobile={isMobile}/>
@@ -297,30 +287,36 @@ export default function Page() {
           <>
           <div style={{
               display: 'flex', 
+              flexDirection: isMobile ? 'column' : 'row',
               alignItems: 'center', 
               justifyContent: 'center', 
               margin: '40px 0'
           }}>
-              <img src="/logo_clear_simple.png" alt="Your Logo" style={{ height: '250px', width: 'auto' }} />
+            {!isMobile && ( // Only render the logo if not on mobile
+              <img 
+                src="/logo_clear_simple.png"
+                alt="Logo" 
+                style={{ height: '250px', width: 'auto' }} 
+              />
+            )}
               <div style={{ 
                   display: 'flex',
                   alignItems: 'center',
                   backgroundColor: '#05656b', 
                   padding: '10px', // Adjust padding to control the size of the box
-                  height: '250px', // Match the height of the logo
+                  height: isMobile ? 'auto' : '250px',
                   boxSizing: 'border-box' // Ensures padding is included in height calculation
               }}>
                   <h1 style={{ 
-                      fontSize: '2.5em', 
-                      marginRight: '40px', // Add some space between the logo and text
-                      marginBottom: '0', // Remove the bottom margin to align with the bottom of the box
-                      color: '#fffcbc' // Optional: Change text color for contrast
+                      fontSize: isMobile ? '1.5em' : '2.5em',  
+                      color: '#fffcbc', // Optional: Change text color for contrast
+                      margin: isMobile ? '0' : '0 40px 0 0',
+                      textAlign: isMobile ? 'center' : 'left'
                   }}>
                       Leverage Our Higher Education Insights to Grow Your Business
                   </h1>
               </div>
           </div>
-
 
           <div style={{ 
             display: 'flex', 
@@ -332,12 +328,10 @@ export default function Page() {
               <OrgCard key={index} title={card.title} content={card.content} image={card.image} isMobile={isMobile}/>
             ))}
           </div>
-          <ContactCard />
+          <ContactCard isMobile={isMobile}/>
           
           </>
           )}
-
-
 
       </div>
       <footer style={{ backgroundColor: '#2a2a2a', padding: '20px', textAlign: 'center' }}>
