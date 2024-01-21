@@ -100,9 +100,9 @@ def get_data():
             }
             return jsonify(combined_data)
         else:
-            return "School not found"
+            return jsonify({"error: School not found"}), 404
     else:
-        return "Please enter a valid university name."
+        return jsonify({"error: School not found"}), 404
 
 @app.route('/selectivity', methods=['GET'])
 def get_selectivity():
