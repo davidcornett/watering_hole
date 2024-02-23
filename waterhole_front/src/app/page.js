@@ -160,12 +160,12 @@ export default function Page() {
     content: "The overall pool of US students is shrinking, but this hides significant differences between states and regions. Colleges with student pipelines from growing areas are positioned to thrive while others will struggle to survive." },
     { title: "Selectivity Matters",
     content: "Elite schools will fare better. This leaves even fewer graduating high school students for the rest. Non-selective schools with poor demographics will have the highest risk of financial difficulties." },
-    { title: "Degree Programs", 
-    content: "The Bureau of Labor Statistics predicts job growth in many fields. This growth will make institutions with the right academic program more attractive to students." }  ];
+    { title: "Degree Program Demand", 
+    content: "The Bureau of Labor Statistics predicts job growth in many fields. This growth will increase student demand for institutions with the right academic programs." }  ];
 
   const orgCards = [
     { title: "Find Segments of Growing Educational Clients", 
-    content: "Despite the 'demographic cliff,' many institutions will thrive due to their strong demographic pipeline, prestige, and academic programs in growing fields. Their increasing budgets position them as strong potential clients for your organization. In contrast, other institutions will face budgetary pressures and a higher risk of financial difficulty.",
+    content: "Despite the 'demographic cliff,' many institutions will thrive due to their strong demographic pipeline, prestige, and by offering academic programs in growing fields. Their increasing budgets position them as strong potential clients for your organization. In contrast, other institutions will face budgetary pressures and a higher risk of financial difficulty.",
     image: "/matrix.png"
   },
     { title: "Our Approach",
