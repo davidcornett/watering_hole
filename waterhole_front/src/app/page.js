@@ -26,7 +26,7 @@ const getUnderLineStyle = (isCurrentPage) => {
 
 
 const IntroCard = ({ title, content }) => (
-  <div style={{ margin: '20px', padding: '20px', border: '1px solid #ccc', borderRadius: '10px', backgroundColor: '#f9f9f9' }}>
+  <div style={{ margin: '10px', padding: '20px', border: '1px solid #ccc', borderRadius: '10px', backgroundColor: '#f9f9f9' }}>
     <h2 style={{ color: '#333' }}>{title}</h2>
     <p style={{ color: '#555', textAlign: 'left' }}>{content}</p>
   </div>
@@ -159,12 +159,13 @@ export default function Page() {
     { title: "Demographic Cliff", 
     content: "The overall pool of US students is shrinking, but this hides significant differences between states and regions. Colleges with student pipelines from growing areas are positioned to thrive while others will struggle to survive." },
     { title: "Selectivity Matters",
-    content: "Elite schools will fare better. This leaves even fewer graduating high school students for the rest. Non-selective schools with poor demographics will have the highest risk of financial difficulties." }
-  ];
+    content: "Elite schools will fare better. This leaves even fewer graduating high school students for the rest. Non-selective schools with poor demographics will have the highest risk of financial difficulties." },
+    { title: "Degree Programs", 
+    content: "The Bureau of Labor Statistics predicts job growth in many fields. This growth will make institutions with the right academic program more attractive to students." }  ];
 
   const orgCards = [
     { title: "Find Segments of Growing Educational Clients", 
-    content: "Despite the 'demographic cliff,' many institutions will thrive due to their strong demographic pipeline and attractiveness to students. Their increasing budgets position them as strong potential clients for your organization. In contrast, other institutions will face budgetary pressures and a higher risk of financial difficulty.",
+    content: "Despite the 'demographic cliff,' many institutions will thrive due to their strong demographic pipeline, prestige, and academic programs in growing fields. Their increasing budgets position them as strong potential clients for your organization. In contrast, other institutions will face budgetary pressures and a higher risk of financial difficulty.",
     image: "/matrix.png"
   },
     { title: "Our Approach",
@@ -271,7 +272,7 @@ export default function Page() {
         <div style={{ 
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(300px, max-content))', // Adjust minmax values as needed
-          gap: '10px', // Space between cards
+          gap: '0px', // Space between cards
           justifyContent: 'left', // Center the cards in the container
           alignItems: 'start', // Align cards to the start of their respective grid cells
           marginLeft: '20px',
