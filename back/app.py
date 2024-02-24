@@ -61,31 +61,42 @@ def get_data():
     university_name = request.args.get('university')
 
     if university_name:
-        # Load and decrypt with the first key
+        
+        # 1- Load and decrypt primary waterhole model dataset
         with open('key.key', 'rb') as f:
             key = f.read()
         cipher_suite = Fernet(key)
 
-        # Load and decrypt 'schools_2027.encrypted'
         with open('schools_2027.encrypted', 'rb') as f:
             encrypted_data = f.read()
         decrypted_data = cipher_suite.decrypt(encrypted_data)
         data_2027 = json.loads(decrypted_data.decode('utf-8'))
 
-        # Load and decrypt with the sidewalk key
+        # 2- Load and decrypt sidewalk model dataset
         with open('sidewalk_key.key', 'rb') as f:
             sidewalk_key = f.read()
         sidewalk_cipher_suite = Fernet(sidewalk_key)
 
-        # Load and decrypt 'schools_sidewalk_2027.encrypted'
         with open('schools_sidewalk_2027.encrypted', 'rb') as f:
             encrypted_data_sidewalk = f.read()
         decrypted_data_sidewalk = sidewalk_cipher_suite.decrypt(encrypted_data_sidewalk)
         data_sidewalk_2027 = json.loads(decrypted_data_sidewalk.decode('utf-8'))
 
+        # 3- Load and decrypt academic program-driven change dataset
+        with open('programs_key.key', 'rb') as f:  
+            programs_key = f.read()
+        programs_cipher_suite = Fernet(programs_key)
+
+        with open('schools_programs_2032.encrypted', 'rb') as f: 
+            encrypted_data_programs = f.read()
+        decrypted_data_programs = programs_cipher_suite.decrypt(encrypted_data_programs)
+        data_programs_2032 = json.loads(decrypted_data_programs.decode('utf-8'))
+
         # Find the matching school in both datasets
         matching_school_2027 = next((info for info in data_2027.values() if info['name_with_state'] == university_name), None)
         matching_school_sidewalk_2027 = next((info for info in data_sidewalk_2027.values() if info['name_with_state'] == university_name), None)
+        matching_school_programs_2032 = next((info for info in data_programs_2032.values() if info['name_with_state'] == university_name), None)
+
 
         # Combine data if both matches are found
         if matching_school_2027 and matching_school_sidewalk_2027:
@@ -98,6 +109,8 @@ def get_data():
                 'latitude': matching_school_2027['latitude'],
                 'longitude': matching_school_2027['longitude']
             }
+            if matching_school_programs_2032:
+                combined_data['Rank'] = matching_school_programs_2032['Rank']
             return jsonify(combined_data)
         else:
             return jsonify({"error: School not found"}), 404
