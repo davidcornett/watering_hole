@@ -165,12 +165,45 @@ export default function Page() {
 
   const orgCards = [
     { title: "Find Segments of Growing Educational Clients", 
-    content: "Despite the 'demographic cliff,' many institutions will thrive due to their strong demographic pipeline, prestige, and by offering academic programs in growing fields. Their increasing budgets position them as strong potential clients for your organization. In contrast, other institutions will face budgetary pressures and a higher risk of financial difficulty.",
+    content: (
+      <div>
+        <p>Despite the 'demographic cliff,' many institutions will thrive due to their strong demographic pipeline, prestige, and by offering academic programs in growing fields. Their increasing budgets position them as strong potential clients for your organization. In contrast, other institutions will face budgetary pressures and a higher risk of financial difficulty.</p>
+        <br></br>
+        <p>Our model identifies growing institutions with strong demographics and competitive academic programs among many traditional education segments:</p>
+        <ul style={{ paddingLeft: '15px' }}> 
+        <strong>
+          <li>4-year publics</li>
+          <li>4-year privates</li>
+          <li>Community Colleges</li>
+          </strong>
+          <li>Institutions located in <strong>every US region</strong></li>
+          
+        </ul>
+      </div>
+    ),
     image: "/matrix.png"
   },
-    { title: "Our Approach",
-    content: "We merge educational-specific datasets with demographic trends to model changes to net tuition and operating revenue for nearly 3,000 institutions. Here is the overall landscape in 2032:",
-    image: "/piechart.png" 
+    { title: "Our Product",
+    content: (
+      <>
+      <div>
+        <p> We provide estimated net tution and operating revenue changes for ~3,000 institutions, including community colleges, and 4-year public and private institutions. </p>
+        <br></br>
+        <p>The product includes:</p>
+        <ul style={{ paddingLeft: '15px' }}> 
+          <li><strong>Full support</strong> to integrate our model into your business processes for 6 months</li>
+          <li><strong>Comprehensive documentation</strong>: all model data sources and assumptions with detailed explanations of functionality</li>
+          <li><strong>Flexibility in format</strong>: receive via Excel or CSV file, through our API, or in any other format you require</li>
+          <li>Optional: up to 3 additional annual model updates at a reduced price</li>
+        </ul>
+      </div>
+      <br></br>
+      <div>
+        <p>Our insights help you navigate a declining market to find growth. Here is a breakdown of how educational institutions will change from now until 2032:</p>
+      </div>
+      </>
+    ),
+    image: "/piechart.png"
   }
   ];
 
@@ -357,9 +390,11 @@ export default function Page() {
           )}
 
           {(showOrgs || showContact) && (
-        <ContactCard isMobile={isMobile}/>
-        )}
-    
+          <ContactCard isMobile={isMobile}/>
+          )}
+
+
+
 
       </div>
       <footer style={{ backgroundColor: '#2a2a2a', padding: '20px', textAlign: 'center' }}>
