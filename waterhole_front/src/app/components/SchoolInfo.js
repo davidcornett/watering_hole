@@ -2,7 +2,7 @@ const MAJOR_CHANGE_THRESHOLD = 0.03;
 
 export default function SchoolInfo({ data }) {
     let scoreValue = Math.round(parseFloat(data.score));
-    let score = `Selectivity Score: ${scoreValue}%`;
+    let score = `Selectivity Score (out of 100): ${scoreValue}%`;
     let demographics = data.students_change_sidewalk;
     let rank = data.Rank;
 

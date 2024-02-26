@@ -164,7 +164,7 @@ export default function Page() {
     content: "The Bureau of Labor Statistics predicts job growth in many fields. This growth will increase student demand for institutions with the right academic programs." }  ];
 
   const orgCards = [
-    { title: "Find Segments of Growing Educational Clients", 
+    { title: "Find Segments of Growing Educational Institutions", 
     content: (
       <div>
         <p>Despite the 'demographic cliff,' many institutions will thrive due to their strong demographic pipeline, prestige, and by offering academic programs in growing fields. Their increasing budgets position them as strong potential clients for your organization. In contrast, other institutions will face budgetary pressures and a higher risk of financial difficulty.</p>
@@ -187,7 +187,9 @@ export default function Page() {
     content: (
       <>
       <div>
-        <p> We provide estimated net tution and operating revenue changes for ~3,000 institutions, including community colleges, and 4-year public and private institutions. </p>
+        <p> 
+          We provide net tution and operating revenue change forecasts for ~3,000 institutions, including community colleges, and 4-year public and private institutions.
+        </p>
         <br></br>
         <p>The product includes:</p>
         <ul style={{ paddingLeft: '15px' }}> 
@@ -199,7 +201,7 @@ export default function Page() {
       </div>
       <br></br>
       <div>
-        <p>Our insights help you navigate a declining market to find growth. Here is a breakdown of how educational institutions will change from now until 2032:</p>
+        <p>Below is visualization of how educational landscape will change in the next decade. Our insights help you find growth in a declining market:</p>
       </div>
       </>
     ),
