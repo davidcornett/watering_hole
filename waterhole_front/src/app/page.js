@@ -424,7 +424,7 @@ export default function Page() {
           <strong>Disclaimer</strong>
               <p>Our model captures important factors impacting school trajectories: selectivity and demographics.
                 However, additional factors will also impact educational institutions, including their leadership decisions,
-                vision & mission, financial strength, debt usage, research activities, acedemic program management, 
+                vision & mission, financial strength, debt usage, research activities, academic program management, 
                 alumni & donor base, and athletic success. </p>
           </div>
         </div>
