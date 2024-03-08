@@ -1,6 +1,6 @@
 # Higher Education Growth Model
 
-Visit our website: [www.edtraverse.com](http://www.edtraverse.com)
+Visit deployed website: [www.edtraverse.com](http://www.edtraverse.com)
 
 The **Higher Education Growth Model** offers cutting-edge insights for stakeholders in the higher education sector. It forecasts the growth or decline of 3,000 colleges based on demographics, selectivity, and academic program attractiveness to students. My goal is to help edtech companies, insurers, lenders, and educational institutions make data-driven decisions about the market.
 
